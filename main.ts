@@ -1,8 +1,5 @@
 import { App, Editor, MarkdownView, Modal, Notice, Plugin, PluginSettingTab, Setting } from 'obsidian';
 
-// Remember to rename these classes and interfaces!
-
-
 export default class ShareMyPluginList extends Plugin {
 
 	async onload() {
@@ -28,7 +25,6 @@ export default class ShareMyPluginList extends Plugin {
 		let text: string[] = [];
 		for (let key in plugins) {
 			const m = plugins[key].manifest;
-			console.log(m)
 			let line = `- [**${m.name}**](https://obsidian.md/plugins?id=${m.id})`
 			if (m.author && m.authorUrl) {
 				line += `by [*${m.author}*](${m.authorUrl})`
@@ -46,7 +42,6 @@ export default class ShareMyPluginList extends Plugin {
 		text.push("|------|------|------|");
 		for (let key in plugins) {
 			const m = plugins[key].manifest;
-			console.log(m)
 			let name = `[**${m.name}**](https://obsidian.md/plugins?id=${m.id})`
 			let author = "";
 			if (m.author && m.authorUrl) {
