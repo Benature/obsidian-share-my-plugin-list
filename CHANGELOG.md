@@ -1,4 +1,8 @@
 # Changelog
 
+## v0.0.2
+- Get plugin list from `this.app.plugins.plugins` rather than read `.obsidian/community-plugins.json` file.
+- [feature] generate table format
+
 ## v0.0.1
-Basic feature: generate a list of plugins.
+- [feature] generate a list of plugins.

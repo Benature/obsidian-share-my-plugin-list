@@ -4,8 +4,10 @@ Share the obsidian plugins that are activated.
 
 This plugin helps you to share/recommend the plugins you are using to others.
 
-![ShareMyPluginList](https://github.com/Benature/obsidian-share-my-plugin-list/assets/35028647/f203165c-4c84-4fc4-9122-346f7ec7b34b)
-
+<!-- ![ShareMyPluginList](https://github.com/Benature/obsidian-share-my-plugin-list/assets/35028647/f203165c-4c84-4fc4-9122-346f7ec7b34b) -->
+<center>
+<img src="https://s2.loli.net/2024/01/24/1STZknQCtmu4qwi.gif" >
+</center>
 
 ## Install
 
@@ -30,3 +32,6 @@ This plugin is in the progress of plugin community release.
 - `npm i`  install dependencies
 - `npm run dev` to start compilation in watch mode.
 - `npm run build`  to build production.
+
+## Todo
+- [ ] display plugin's name rather than its ID.
