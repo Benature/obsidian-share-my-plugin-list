@@ -3,16 +3,19 @@ import { App, Editor, MarkdownView, Modal, Notice, Plugin, PluginSettingTab, Set
 export default class ShareMyPluginList extends Plugin {
 
 	async onload() {
+		let lang = window.localStorage.getItem('language');
+		if (lang == null || ["en", "zh", "zh-TW"].indexOf(lang) == -1) { lang = "en"; }
+
 		this.addCommand({
 			id: 'generate-list',
-			name: 'Generate List',
+			name: { en: 'Generate List', 'zh': '生成插件列表', 'zh-TW': '產生插件清單' }[lang] as string,
 			editorCallback: (editor: Editor, view: MarkdownView) => {
 				this.genList(editor);
 			}
 		});
 		this.addCommand({
 			id: 'generate-table',
-			name: 'Generate Table',
+			name: { en: 'Generate Table', zh: '生成插件表格', 'zh-TW': '產生插件表格' }[lang] as string,
 			editorCallback: (editor: Editor, view: MarkdownView) => {
 				this.genTable(editor);
 			}
