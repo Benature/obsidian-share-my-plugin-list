@@ -7,7 +7,7 @@ on:
             - "*" # Push events to matching any tag format, i.e. 1.0, 20.15.10
 
 env:
-    PLUGIN_NAME: obsidian-metadata-icon
+    PLUGIN_NAME: obsidian-share-my-plugin-list
 
 jobs:
     build:
