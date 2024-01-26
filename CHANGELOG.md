@@ -1,10 +1,11 @@
 # Changelog
 
-- [updated] command support Chinese language.
+## 0.0.3
+- [updated] Chinese language support: command, table headers.
 
-## v0.0.2
+## 0.0.2
 - Get plugin list from `this.app.plugins.plugins` rather than read `.obsidian/community-plugins.json` file.
 - [feature] generate table format
 
-## v0.0.1
+## 0.0.1
 - [feature] generate a list of plugins.

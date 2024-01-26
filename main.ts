@@ -8,14 +8,14 @@ export default class ShareMyPluginList extends Plugin {
 
 		this.addCommand({
 			id: 'generate-list',
-			name: { en: 'Generate List', 'zh': '生成插件列表', 'zh-TW': '產生插件清單' }[lang] as string,
+			name: { en: 'Export as List', 'zh': '列表形式导出插件名单', 'zh-TW': '清單形式匯出插件名單' }[lang] as string,
 			editorCallback: (editor: Editor, view: MarkdownView) => {
 				this.genList(editor);
 			}
 		});
 		this.addCommand({
 			id: 'generate-table',
-			name: { en: 'Generate Table', zh: '生成插件表格', 'zh-TW': '產生插件表格' }[lang] as string,
+			name: { en: 'Export as Table', zh: '表格形式导出插件名单', 'zh-TW': '表格形式匯出插件名單' }[lang] as string,
 			editorCallback: (editor: Editor, view: MarkdownView) => {
 				this.genTable(editor);
 			}
@@ -39,10 +39,23 @@ export default class ShareMyPluginList extends Plugin {
 
 	async genTable(editor: Editor) {
 		const plugins = this.getPlugins();
+		const lang = window.localStorage.getItem('language');
 
 		let text: string[] = [""];
-		text.push("|Plugin|Author|Version|");
-		text.push("|------|------|------|");
+		switch (lang) {
+			case "zh":
+				text.push("|插件名|作者|版本|");
+				text.push("|-----|---|----|");
+				break;
+			case "zh-TW":
+				text.push("|插件名|作者|版本|");
+				text.push("|-----|---|----|");
+				break;
+			default:
+				text.push("|Name|Author|Version|");
+				text.push("|----|------|-------|");
+				break;
+		}
 		for (let key in plugins) {
 			const m = plugins[key].manifest;
 			let name = `[**${m.name}**](https://obsidian.md/plugins?id=${m.id})`
