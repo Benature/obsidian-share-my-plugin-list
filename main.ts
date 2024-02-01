@@ -28,9 +28,12 @@ export default class ShareMyPluginList extends Plugin {
 		let text: string[] = [];
 		for (let key in plugins) {
 			const m = plugins[key].manifest;
-			let line = `- [**${m.name}**](https://obsidian.md/plugins?id=${m.id})`
+			let line = `- [**${m.name}**](${m.pluginUrl})`
 			if (m.author && m.authorUrl) {
-				line += `by [*${m.author}*](${m.authorUrl})`
+				line += ` by [*${m.author}*](${m.authorUrl})`
+			}
+			if (m.fundingUrl) {
+				line += ` [♡](${m.fundingUrl})`
 			}
 			text.push(line);
 		}
@@ -58,10 +61,13 @@ export default class ShareMyPluginList extends Plugin {
 		}
 		for (let key in plugins) {
 			const m = plugins[key].manifest;
-			let name = `[**${m.name}**](https://obsidian.md/plugins?id=${m.id})`
+			let name = `[**${m.name}**](${m.pluginUrl})`
 			let author = "";
 			if (m.author && m.authorUrl) {
 				author = `[${m?.author.replace(/<.*?@.*?\..*?>/g, "")}](${m?.authorUrl})`
+			}
+			if (m.fundingUrl && typeof (m.fundingUrl) == 'string') {
+				author += ` [♡](${m.fundingUrl})`
 			}
 			text.push(`|${name}|${author}|${m?.version}|`);
 		}
@@ -70,7 +76,30 @@ export default class ShareMyPluginList extends Plugin {
 
 	getPlugins() {
 		// @ts-ignore
-		return this.app.plugins.plugins;
+		let plugins = this.app.plugins.plugins;
+		for (let name in plugins) {
+			plugins[name].manifest.pluginUrl = `https://obsidian.md/plugins?id=${plugins[name].manifest.id}`;
+		}
+		if ("obsidian42-brat" in plugins == false) {
+			return plugins;
+		}
+		const BRAT = plugins["obsidian42-brat"];
+		for (let p of BRAT.settings.pluginList) {
+			const pSplit = p.split("/");
+			let githubAuthor: string = pSplit[0], name: string = pSplit[1];
+			let find = false;
+			if (name.toLowerCase() in plugins) {
+				find = true;
+			} else {
+				name = name.toLowerCase().replace(/^obsidian-?/g, "");
+				if (name in plugins) { find = true; }
+			}
+
+			if (find) {
+				plugins[name].manifest.pluginUrl = `https://github.com/${p}`;
+			}
+		}
+		return plugins;
 	}
 
 	onunload() {
