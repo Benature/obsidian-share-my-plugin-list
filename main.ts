@@ -30,11 +30,9 @@ export default class ShareMyPluginList extends Plugin {
 			const m = plugins[key].manifest;
 			let line = `- [**${m.name}**](${m.pluginUrl})`
 			if (m.author && m.authorUrl) {
-				line += ` by [*${m.author}*](${m.authorUrl})`
+				line += ` by [*${m.author2}*](${m.authorUrl})`
 			}
-			if (m.fundingUrl) {
-				line += ` [♡](${m.fundingUrl})`
-			}
+			line += processFunding(m);
 			text.push(line);
 		}
 		editor.replaceSelection(text.join('\n') + "\n");
@@ -64,11 +62,9 @@ export default class ShareMyPluginList extends Plugin {
 			let name = `[**${m.name}**](${m.pluginUrl})`
 			let author = "";
 			if (m.author && m.authorUrl) {
-				author = `[${m?.author.replace(/<.*?@.*?\..*?>/g, "")}](${m?.authorUrl})`
+				author = `[${m?.author2}](${m?.authorUrl})`
 			}
-			if (m.fundingUrl && typeof (m.fundingUrl) == 'string') {
-				author += ` [♡](${m.fundingUrl})`
-			}
+			author += processFunding(m);
 			text.push(`|${name}|${author}|${m?.version}|`);
 		}
 		editor.replaceSelection(text.join('\n') + "\n");
@@ -79,6 +75,7 @@ export default class ShareMyPluginList extends Plugin {
 		let plugins = this.app.plugins.plugins;
 		for (let name in plugins) {
 			plugins[name].manifest.pluginUrl = `https://obsidian.md/plugins?id=${plugins[name].manifest.id}`;
+			plugins[name].manifest["author2"] = plugins[name].manifest.author.replace(/<.*?@.*?\..*?>/g, "").trim();
 		}
 		if ("obsidian42-brat" in plugins == false) {
 			return plugins;
@@ -104,4 +101,19 @@ export default class ShareMyPluginList extends Plugin {
 
 	onunload() {
 	}
+}
+
+function processFunding(m: any): string {
+	let info: string = "";
+	if (m.fundingUrl) {
+		if (typeof (m.fundingUrl) == 'string') {
+			info += ` [♡](${m.fundingUrl})`
+		} else if (typeof (m.fundingUrl) == 'object') {
+			for (let key in m.fundingUrl) {
+				console.log(key)
+				info += ` [♡](${m.fundingUrl[key]})`
+			}
+		}
+	}
+	return info;
 }

@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.0.5
+- [feature] support multi-funding
+
 ## 0.0.4
 - [feature] add funding url
 - [updated] read BRAT's beta plugin list and update its url to github directly (may be buggy, i.e. fail to match plugin)

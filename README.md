@@ -35,3 +35,11 @@ This plugin is in the progress of plugin community release.
 
 ## Todo
 - [ ] display plugin's name rather than its ID.
+
+## Support
+
+If you find this plugin useful and would like to support its development, you can sponsor me via [Buy Me a Coffee ☕️](https://www.buymeacoffee.com/benature), WeChat, Alipay or [AiFaDian](https://afdian.net/a/Benature-K). Any amount is welcome, thank you!
+
+<p align="center">
+<img src="https://s2.loli.net/2024/01/30/jQ9fTSyBxvXRoOM.png" width="500px">
+</p>
