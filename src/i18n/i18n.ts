@@ -13,7 +13,6 @@ export class Locals {
 			case "zh-tw":
 				return ZHtw;
 			default:
-				console.log(EN)
 				return EN;
 		}
 	}
