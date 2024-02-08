@@ -1,21 +1,22 @@
 import { App, Editor, MarkdownView, Modal, Notice, Plugin, PluginSettingTab, Setting } from 'obsidian';
+import { Locals } from "./src/i18n/i18n";
 
 export default class ShareMyPluginList extends Plugin {
 
 	async onload() {
-		let lang = window.localStorage.getItem('language');
-		if (lang == null || ["en", "zh", "zh-TW"].indexOf(lang) == -1) { lang = "en"; }
+		const t = Locals.get();
+		console.log(t)
 
 		this.addCommand({
 			id: 'generate-list',
-			name: { en: 'Export as List', 'zh': '列表形式导出插件名单', 'zh-TW': '清單形式匯出插件名單' }[lang] as string,
+			name: t.commandGenerateList,
 			editorCallback: (editor: Editor, view: MarkdownView) => {
 				this.genList(editor);
 			}
 		});
 		this.addCommand({
 			id: 'generate-table',
-			name: { en: 'Export as Table', zh: '表格形式导出插件名单', 'zh-TW': '表格形式匯出插件名單' }[lang] as string,
+			name: t.commandGenerateTable,
 			editorCallback: (editor: Editor, view: MarkdownView) => {
 				this.genTable(editor);
 			}
@@ -40,23 +41,12 @@ export default class ShareMyPluginList extends Plugin {
 
 	async genTable(editor: Editor) {
 		const plugins = this.getPlugins();
-		const lang = window.localStorage.getItem('language');
+		const t = Locals.get();
 
 		let text: string[] = [""];
-		switch (lang) {
-			case "zh":
-				text.push("|插件名|作者|版本|");
-				text.push("|-----|---|----|");
-				break;
-			case "zh-TW":
-				text.push("|插件名|作者|版本|");
-				text.push("|-----|---|----|");
-				break;
-			default:
-				text.push("|Name|Author|Version|");
-				text.push("|----|------|-------|");
-				break;
-		}
+		text.push(t.genTableTemplateHeading);
+		text.push(t.genTableTemplateAlign);
+
 		for (let key in plugins) {
 			const m = plugins[key].manifest;
 			let name = `[**${m.name}**](${m.pluginUrl})`
@@ -107,11 +97,10 @@ function processFunding(m: any): string {
 	let info: string = "";
 	if (m.fundingUrl) {
 		if (typeof (m.fundingUrl) == 'string') {
-			info += ` [♡](${m.fundingUrl})`
+			info += ` [♡](${m.fundingUrl})`;
 		} else if (typeof (m.fundingUrl) == 'object') {
 			for (let key in m.fundingUrl) {
-				console.log(key)
-				info += ` [♡](${m.fundingUrl[key]})`
+				info += ` [♡](${m.fundingUrl[key]})`;
 			}
 		}
 	}
