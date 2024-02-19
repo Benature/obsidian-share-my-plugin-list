@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.0.7
+- [updated] Update plugin name as requested as sentence case.
+
+## 0.0.6
+- [updated] i18n support
+
 ## 0.0.5
 - [feature] support multi-funding
 
