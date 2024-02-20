@@ -1,4 +1,5 @@
-import { LocalProperty } from "./types";
+import { LocalProperty } from "./i18n";
+
 
 export const ZH: LocalProperty = {
 	commandGenerateList: '列表形式导出插件名单',

@@ -1,7 +1,14 @@
 import { EN } from "./en";
-import { LocalProperty } from "./types";
 import { ZH } from "./zh";
-import { ZHtw } from "./zh-tw";
+// import { ZHtw } from "./zh-tw";
+
+export interface LocalProperty {
+	commandGenerateList: string;
+	commandGenerateTable: string;
+	commandExportFile: string;
+	genTableTemplateHeading: string;
+	genTableTemplateAlign: string;
+}
 
 export class Locals {
 

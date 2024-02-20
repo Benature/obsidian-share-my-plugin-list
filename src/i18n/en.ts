@@ -1,4 +1,4 @@
-import { LocalProperty } from "./types";
+import { LocalProperty } from "./i18n";
 
 export const EN: LocalProperty = {
 	commandGenerateList: 'Export as List',
