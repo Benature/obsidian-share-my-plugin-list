@@ -1,6 +1,6 @@
 import { EN } from "./en";
 import { ZH } from "./zh";
-// import { ZHtw } from "./zh-tw";
+import { ZHtw } from "./zh-tw";
 
 export interface LocalProperty {
 	commandGenerateList: string;
@@ -17,8 +17,8 @@ export class Locals {
 		switch (lang) {
 			case "zh":
 				return ZH;
-			// case "zh-tw":
-			// 	return ZHtw;
+			case "zh-tw":
+				return ZHtw;
 			default:
 				return EN;
 		}
