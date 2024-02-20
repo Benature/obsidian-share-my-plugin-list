@@ -99,8 +99,15 @@ function processFunding(m: any): string {
 		if (typeof (m.fundingUrl) == 'string') {
 			info += ` [♡](${m.fundingUrl})`;
 		} else if (typeof (m.fundingUrl) == 'object') {
+			let sep = " "
 			for (let key in m.fundingUrl) {
-				info += ` [♡](${m.fundingUrl[key]})`;
+				const url = m.fundingUrl[key]
+				let symbol = "♡"
+				if (url.indexOf("www.buymeacoffee.com") > -1) {
+					symbol = "☕️"
+				}
+				info += `${sep}[${symbol}](${url})`;
+				sep = "/"
 			}
 		}
 	}
