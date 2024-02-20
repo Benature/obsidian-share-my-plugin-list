@@ -33,7 +33,7 @@ export class ShareMyPluginSettingTab extends PluginSettingTab {
 		containerEl.createEl("h2", { text: "Export to file" });
 		new Setting(this.containerEl)
 			.setName("Path of file to export")
-			.setDesc("")
+			.setDesc("IMPORTANT: This file will be overwritten by the plugin, i.e., old content would be deleted.")
 			.addSearch((cb) => {
 				new FileSuggest(this.app, cb.inputEl);
 				cb.setPlaceholder("output/ShareMyPlugin.md")

@@ -12,21 +12,21 @@ export default class ShareMyPlugin extends Plugin {
 
 		this.addCommand({
 			id: 'generate-list',
-			name: t.commandGenerateList,
+			name: t.command.GenerateList,
 			editorCallback: (editor: Editor, view: MarkdownView) => {
 				editor.replaceSelection(this.genList());
 			}
 		});
 		this.addCommand({
 			id: 'generate-table',
-			name: t.commandGenerateTable,
+			name: t.command.GenerateTable,
 			editorCallback: (editor: Editor, view: MarkdownView) => {
 				editor.replaceSelection(this.genTable());
 			}
 		});
 		this.addCommand({
 			id: 'export-file',
-			name: t.commandExportFile,
+			name: t.command.ExportFile,
 			callback: async () => {
 				let content: string;
 				switch (this.settings.exportFileFormat) {
@@ -82,8 +82,8 @@ export default class ShareMyPlugin extends Plugin {
 		const t = Locals.get();
 
 		let text: string[] = [""];
-		text.push(t.genTableTemplateHeading);
-		text.push(t.genTableTemplateAlign);
+		text.push(t.genTableTemplate.Heading);
+		text.push(t.genTableTemplate.Align);
 
 		for (let key in plugins) {
 			if (this.settings.debugMode) { console.log(plugins[key]); }
@@ -150,8 +150,14 @@ function processFunding(m: any): string {
 			for (let key in m.fundingUrl) {
 				const url = m.fundingUrl[key]
 				let symbol = "♡"
-				if (url.indexOf("www.buymeacoffee.com") > -1) {
-					symbol = "☕️"
+				let domain = /https?:\/\/([\w\.]+)\//g.exec(url);
+				if (domain) {
+					switch (domain[1]) {
+						case "www.buymeacoffee.com":
+							symbol = "☕️"; break;
+						case "afdian.net":
+							symbol = "⚡️"; break;
+					}
 				}
 				info += `${sep}[${symbol}](${url})`;
 				sep = "/"

@@ -1,18 +1,42 @@
-import { EN } from "./en";
-import { ZH } from "./zh";
-import { ZHtw } from "./zh-tw";
-
-export interface LocalProperty {
-	commandGenerateList: string;
-	commandGenerateTable: string;
-	commandExportFile: string;
-	genTableTemplateHeading: string;
-	genTableTemplateAlign: string;
+const EN = {
+	command: {
+		GenerateList: 'Export as List',
+		GenerateTable: 'Export as Table',
+		ExportFile: "Export to file",
+	},
+	genTableTemplate: {
+		Heading: "|Name|Author|Version|",
+		Align: "|----|------|-------|",
+	}
 }
 
-export class Locals {
+const ZH = {
+	command: {
+		GenerateList: '导出为列表',
+		GenerateTable: '导出为表格',
+		ExportFile: "导出到文件"
+	},
+	genTableTemplate: {
+		Heading: "|名称|作者|版本|",
+		Align: "|---|---|---|"
+	}
+}
 
-	static get(): LocalProperty {
+const ZHtw = {
+	command: {
+		GenerateList: '匯出為列表',
+		GenerateTable: '匯出為表格',
+		ExportFile: "匯出到檔案"
+	},
+	genTableTemplate: {
+		Heading: "|名稱|作者|版本|",
+		Align: "|---|---|---|"
+	}
+}
+
+
+export class Locals {
+	static get() {
 		const lang = window.localStorage.getItem("language");
 		switch (lang) {
 			case "zh":
