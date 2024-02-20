@@ -1,33 +1,70 @@
 import { App, Editor, MarkdownView, Modal, Notice, Plugin, PluginSettingTab, Setting } from 'obsidian';
+import { PluginSettings, DEFAULT_SETTINGS, ShareMyPluginSettingTab as ShareMyPluginSettingTab } from "src/setting/setting";
 import { Locals } from "./src/i18n/i18n";
 
-export default class ShareMyPluginList extends Plugin {
+export default class ShareMyPlugin extends Plugin {
+	settings: PluginSettings;
 
 	async onload() {
 		const t = Locals.get();
-		console.log(t)
+		await this.loadSettings();
+		this.addSettingTab(new ShareMyPluginSettingTab(this.app, this));
 
 		this.addCommand({
 			id: 'generate-list',
 			name: t.commandGenerateList,
 			editorCallback: (editor: Editor, view: MarkdownView) => {
-				this.genList(editor);
+				editor.replaceSelection(this.genList());
 			}
 		});
 		this.addCommand({
 			id: 'generate-table',
 			name: t.commandGenerateTable,
 			editorCallback: (editor: Editor, view: MarkdownView) => {
-				this.genTable(editor);
+				editor.replaceSelection(this.genTable());
+			}
+		});
+		this.addCommand({
+			id: 'export-file',
+			name: t.commandExportFile,
+			callback: async () => {
+				let content: string;
+				switch (this.settings.exportFileFormat) {
+					case "list":
+						content = this.genList();
+						break;
+					case "table":
+						content = this.genTable();
+						break;
+					default:
+						new Notice(`Unknow export file format: ${this.settings.exportFileFormat}`);
+						return;
+				}
+
+				const vault = this.app.vault;
+				const path = this.settings.exportFilePath;
+				if (await vault.adapter.exists(path)) { await vault.adapter.remove(path) }
+				await vault.create(path, content);
+				new Notice(`Exported plugin ${this.settings.exportFileFormat} to ${path}.`);
+
 			}
 		});
 	}
 
-	async genList(editor: Editor) {
+	async loadSettings() {
+		this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
+	}
+
+	async saveSettings() {
+		await this.saveData(this.settings);
+	}
+
+	genList(): string {
 		const plugins = this.getPlugins();
 
 		let text: string[] = [];
 		for (let key in plugins) {
+			if (this.settings.debugMode) { console.log(plugins[key]); }
 			const m = plugins[key].manifest;
 			let line = `- [**${m.name}**](${m.pluginUrl})`
 			if (m.author && m.authorUrl) {
@@ -36,10 +73,11 @@ export default class ShareMyPluginList extends Plugin {
 			line += processFunding(m);
 			text.push(line);
 		}
-		editor.replaceSelection(text.join('\n') + "\n");
+		return text.join('\n') + "\n";
+
 	}
 
-	async genTable(editor: Editor) {
+	genTable(): string {
 		const plugins = this.getPlugins();
 		const t = Locals.get();
 
@@ -48,6 +86,7 @@ export default class ShareMyPluginList extends Plugin {
 		text.push(t.genTableTemplateAlign);
 
 		for (let key in plugins) {
+			if (this.settings.debugMode) { console.log(plugins[key]); }
 			const m = plugins[key].manifest;
 			let name = `[**${m.name}**](${m.pluginUrl})`
 			let author = "";
@@ -57,15 +96,23 @@ export default class ShareMyPluginList extends Plugin {
 			author += processFunding(m);
 			text.push(`|${name}|${author}|${m?.version}|`);
 		}
-		editor.replaceSelection(text.join('\n') + "\n");
+		return text.join('\n') + "\n";
 	}
 
 	getPlugins() {
 		// @ts-ignore
-		let plugins = this.app.plugins.plugins;
-		for (let name in plugins) {
-			plugins[name].manifest.pluginUrl = `https://obsidian.md/plugins?id=${plugins[name].manifest.id}`;
-			plugins[name].manifest["author2"] = plugins[name].manifest.author.replace(/<.*?@.*?\..*?>/g, "").trim();
+		const originPlugins = this.app.plugins.plugins;
+		let plugins: any = {};
+		for (let name in originPlugins) {
+			try {
+				let plugin = originPlugins[name];
+				if (this.settings.debugMode) { console.log(plugin); }
+				plugin.manifest.pluginUrl = `https://obsidian.md/plugins?id=${plugin.manifest.id}`;
+				plugin.manifest["author2"] = plugin.manifest.author.replace(/<.*?@.*?\..*?>/g, "").trim(); // remove email address
+				plugins[name] = plugin;
+			} catch (e) {
+				console.log(e)
+			}
 		}
 		if ("obsidian42-brat" in plugins == false) {
 			return plugins;

@@ -10,8 +10,8 @@ export class Locals {
 		switch (lang) {
 			case "zh":
 				return ZH;
-			case "zh-tw":
-				return ZHtw;
+			// case "zh-tw":
+			// 	return ZHtw;
 			default:
 				return EN;
 		}
