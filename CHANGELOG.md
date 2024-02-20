@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.0 beta
+- [feature] new command: export to file [#2](https://github.com/Benature/obsidian-share-my-plugin-list/issues/2)
+- [updated] specific funding symbol
+  - www.buymeacoffee.com: ☕️
+  - afdian.net: ⚡️
+  - default: ♡
+
 ## 0.0.7
 - [updated] Update plugin name as requested as sentence case.
 
