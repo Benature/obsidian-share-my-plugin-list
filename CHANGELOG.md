@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.1.0 beta
+## 0.1.0
 - [feature] new command: export to file [#2](https://github.com/Benature/obsidian-share-my-plugin-list/issues/2)
 - [updated] specific funding symbol
   - www.buymeacoffee.com: ☕️
