@@ -89,8 +89,8 @@ export class ShareMyPluginSettingTab extends PluginSettingTab {
 				});
 		}
 		new Setting(containerEl)
-			.setName("Export file once Obsidian is opened.")
-			.setDesc("")
+			.setName("Export file once Obsidian is started.")
+			.setDesc("Automatically update each time Obsidian is started")
 			.addToggle((toggle) => {
 				toggle
 					.setValue(this.plugin.settings.exportFileWhenLoaded)

@@ -1,7 +1,9 @@
 const EN = {
 	command: {
-		GenerateList: 'Export as List',
-		GenerateTable: 'Export as Table',
+		GenerateActiveList: 'Export active plugins as list',
+		GenerateActiveTable: 'Export active plugins as table',
+		GenerateInactiveList: 'Export inactive plugins as list',
+		GenerateInactiveTable: 'Export inactive plugins as table',
 		ExportFile: "Export to file",
 	},
 	genTableTemplate: {
@@ -12,8 +14,10 @@ const EN = {
 
 const ZH = {
 	command: {
-		GenerateList: '导出为列表',
-		GenerateTable: '导出为表格',
+		GenerateActiveList: '导出启用插件列表',
+		GenerateActiveTable: '导出启用插件表格',
+		GenerateInactiveList: '导出禁用插件列表',
+		GenerateInactiveTable: '导出禁用插件表格',
 		ExportFile: "导出到文件"
 	},
 	genTableTemplate: {
@@ -24,8 +28,10 @@ const ZH = {
 
 const ZHtw = {
 	command: {
-		GenerateList: '匯出為列表',
-		GenerateTable: '匯出為表格',
+		GenerateActiveList: '匯出啟用插件列表',
+		GenerateActiveTable: '匯出啟用插件表格',
+		GenerateInactiveList: '匯出禁用插件列表',
+		GenerateInactiveTable: '匯出禁用插件表格',
 		ExportFile: "匯出到檔案"
 	},
 	genTableTemplate: {
