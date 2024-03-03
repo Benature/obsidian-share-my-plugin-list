@@ -28,42 +28,51 @@ export default class ShareMyPlugin extends Plugin {
 			id: 'export-file',
 			name: t.command.ExportFile,
 			callback: async () => {
-				let content: string;
-				switch (this.settings.exportFileFormat) {
-					case "list":
-						content = this.genList();
-						break;
-					case "table":
-						content = this.genTable();
-						break;
-					default:
-						new Notice(`Unknow export file format: ${this.settings.exportFileFormat}`);
-						return;
-				}
-
-				const commentPrefix = "<!-- ShareMyPlugin begin -->";
-				const commentSuffix = "<!-- ShareMyPlugin end -->";
-				content = commentPrefix + "\n\n" + content + "\n\n" + commentSuffix;
-
-				const vault = this.app.vault;
-				const path = this.settings.exportFilePath;
-				await this.touchFolder(vault, path.split(/[\/\\]/).slice(0, -1).join("/"));
-				if (await vault.adapter.exists(path)) {
-					let contentOriginal = await vault.adapter.read(path);
-					const r = RegExp(commentPrefix + String.raw`[\s\S]*?` + commentSuffix, "m");
-					let contentNew = r.test(contentOriginal) ? contentOriginal.replace(r, content) : content;
-					await vault.adapter.write(path, contentNew);
-				} else {
-					await vault.create(path, content);
-				}
-
-				new Notice(`Exported plugin ${this.settings.exportFileFormat} to ${path}.`);
-
-				if (this.settings.exportFileOpen) {
-					this.app.workspace.openLinkText(path, path, this.settings.exportFileNewLeaf);
-				}
+				await this.exportToFile();
 			}
 		});
+
+		if (this.settings.exportFileWhenLoaded) {
+			setTimeout(async () => {
+				await this.exportToFile(false);
+			}, 1000);
+		}
+	}
+	async exportToFile(open = true) {
+		let content: string;
+		switch (this.settings.exportFileFormat) {
+			case "list":
+				content = this.genList();
+				break;
+			case "table":
+				content = this.genTable();
+				break;
+			default:
+				new Notice(`Unknow export file format: ${this.settings.exportFileFormat}`);
+				return;
+		}
+
+		const commentPrefix = "<!-- ShareMyPlugin begin -->";
+		const commentSuffix = "<!-- ShareMyPlugin end -->";
+		content = commentPrefix + "\n\n" + content + "\n\n" + commentSuffix;
+
+		const vault = this.app.vault;
+		const path = this.settings.exportFilePath;
+		await this.touchFolder(vault, path.split(/[\/\\]/).slice(0, -1).join("/"));
+		if (await vault.adapter.exists(path)) {
+			let contentOriginal = await vault.adapter.read(path);
+			const r = RegExp(commentPrefix + String.raw`[\s\S]*?` + commentSuffix, "m");
+			let contentNew = r.test(contentOriginal) ? contentOriginal.replace(r, content) : content;
+			await vault.adapter.write(path, contentNew);
+		} else {
+			await vault.create(path, content);
+		}
+
+		new Notice(`Exported plugin ${this.settings.exportFileFormat} to ${path}.`);
+
+		if (open && this.settings.exportFileOpen) {
+			this.app.workspace.openLinkText(path, path, this.settings.exportFileNewLeaf);
+		}
 	}
 
 	async touchFolder(vault: any, folder: string) {

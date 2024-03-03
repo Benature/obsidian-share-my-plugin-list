@@ -10,6 +10,7 @@ export interface PluginSettings {
 	exportFileFormat: string,
 	exportFileOpen: boolean,
 	exportFileNewLeaf: boolean,
+	exportFileWhenLoaded: boolean,
 	debugMode: boolean,
 }
 
@@ -18,6 +19,7 @@ export const DEFAULT_SETTINGS: PluginSettings = {
 	exportFileFormat: "list",
 	exportFileOpen: true,
 	exportFileNewLeaf: true,
+	exportFileWhenLoaded: false,
 	debugMode: false,
 };
 
@@ -86,6 +88,18 @@ export class ShareMyPluginSettingTab extends PluginSettingTab {
 						});
 				});
 		}
+		new Setting(containerEl)
+			.setName("Export file once Obsidian is opened.")
+			.setDesc("")
+			.addToggle((toggle) => {
+				toggle
+					.setValue(this.plugin.settings.exportFileWhenLoaded)
+					.onChange(async (value) => {
+						this.plugin.settings.exportFileWhenLoaded = value;
+						await this.plugin.saveSettings();
+						this.display();
+					});
+			});
 
 		containerEl.createEl("h2", { text: "Advance settings" });
 		new Setting(containerEl)

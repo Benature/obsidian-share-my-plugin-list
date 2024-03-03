@@ -1,6 +1,7 @@
 # Changelog
 
-- [updated] export to file: specify the overwrite location in file #7
+- [updated] Export to file: export once plugin loaded (or Obsidian is opened) #8
+- [updated] Export to file: specify the overwrite location in file #7
 - [updated] Export to file: open file after exporting #6
 - [updated] Export to file: create folder when the path is invalid #5
 
