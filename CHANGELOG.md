@@ -1,5 +1,7 @@
 # Changelog
 
+# 0.2.0
+- [feature] List of disabled plugins #3
 - [updated] Export to file: export once plugin loaded (or Obsidian is opened) #8
 - [updated] Export to file: specify the overwrite location in file #7
 - [updated] Export to file: open file after exporting #6

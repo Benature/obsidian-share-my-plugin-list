@@ -128,7 +128,7 @@ export default class ShareMyPlugin extends Plugin {
 		for (let key in plugins) {
 			// this.debug(key)
 			const m = plugins[key].manifest;
-			// this.debug(m)
+			this.debug(m)
 			let line = `- [**${m.name}**](${m.pluginUrl})`
 			if (m.author && m.authorUrl) {
 				line += ` by [*${m.author2}*](${m.authorUrl})`
@@ -137,7 +137,7 @@ export default class ShareMyPlugin extends Plugin {
 			text.push(line);
 		}
 		this.debug(text);
-		return text.join('\n') + "\n";
+		return text.join('\n') + "\n\n";
 	}
 
 	genTable(plugins: any): string {
@@ -186,7 +186,7 @@ export default class ShareMyPlugin extends Plugin {
 		const basePath = vault.adapter.basePath;
 		const pluginPath = normalizePath(basePath + "/" + vault.configDir + "/plugins");
 
-		const plugins: { [key: string]: any } = {};
+		const pluginsArray: { [key: string]: any } = {};
 		const pluginFolderNames: Promise<string[]> = new Promise((resolve, reject) => {
 			fs.readdir(pluginPath, (err, files) => {
 				if (err) {
@@ -198,14 +198,16 @@ export default class ShareMyPlugin extends Plugin {
 		});
 		for (let folderName of await pluginFolderNames) {
 			if (!activePluginFolderName.includes(folderName)) {
-				const manifestPath = normalizePath(basePath + "/" + vault.configDir + "/plugins/" + folderName + "/manifest.json");
+				// @ts-ignore
+				const { plugins } = this.app;
+				const manifestPath = normalizePath(basePath + "/" + plugins.getPluginFolder() + "/" + folderName + "/manifest.json");
 				if (fs.existsSync(manifestPath)) {
 					const manifest = JSON.parse(fs.readFileSync(manifestPath, "utf-8"));
-					plugins[manifest.id] = { manifest: manifest };
+					pluginsArray[manifest.id] = { manifest: manifest };
 				}
 			}
 		}
-		return processPlugins(plugins);
+		return processPlugins(pluginsArray);
 	}
 
 	onunload() {
