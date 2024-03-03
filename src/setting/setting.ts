@@ -8,12 +8,16 @@ import { addFundingElement } from "./funding";
 export interface PluginSettings {
 	exportFilePath: string,
 	exportFileFormat: string,
+	exportFileOpen: boolean,
+	exportFileNewLeaf: boolean,
 	debugMode: boolean,
 }
 
 export const DEFAULT_SETTINGS: PluginSettings = {
 	exportFilePath: "ShareMyPlugin.md",
 	exportFileFormat: "list",
+	exportFileOpen: true,
+	exportFileNewLeaf: true,
 	debugMode: false,
 };
 
@@ -56,6 +60,32 @@ export class ShareMyPluginSettingTab extends PluginSettingTab {
 						this.plugin.settings.exportFileFormat = value;
 						this.plugin.saveSettings();
 					}));
+
+		new Setting(containerEl)
+			.setName("Open file after export")
+			.setDesc("Open the exported file after export.")
+			.addToggle((toggle) => {
+				toggle
+					.setValue(this.plugin.settings.exportFileOpen)
+					.onChange(async (value) => {
+						this.plugin.settings.exportFileOpen = value;
+						await this.plugin.saveSettings();
+						this.display();
+					});
+			});
+		if (this.plugin.settings.exportFileOpen) {
+			new Setting(containerEl)
+				.setName("Open in new leaf")
+				.setDesc("Open the exported file in a new leaf.")
+				.addToggle((toggle) => {
+					toggle
+						.setValue(this.plugin.settings.exportFileNewLeaf)
+						.onChange(async (value) => {
+							this.plugin.settings.exportFileNewLeaf = value;
+							await this.plugin.saveSettings();
+						});
+				});
+		}
 
 		containerEl.createEl("h2", { text: "Advance settings" });
 		new Setting(containerEl)

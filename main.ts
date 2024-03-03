@@ -1,4 +1,4 @@
-import { App, Editor, MarkdownView, Modal, Notice, Plugin, PluginSettingTab, Setting } from 'obsidian';
+import { App, Editor, MarkdownView, Modal, Notice, Plugin, PluginSettingTab, Setting, TFile } from 'obsidian';
 import { PluginSettings, DEFAULT_SETTINGS, ShareMyPluginSettingTab as ShareMyPluginSettingTab } from "src/setting/setting";
 import { Locals } from "./src/i18n/i18n";
 
@@ -48,6 +48,9 @@ export default class ShareMyPlugin extends Plugin {
 				await vault.create(path, content);
 				new Notice(`Exported plugin ${this.settings.exportFileFormat} to ${path}.`);
 
+				if (this.settings.exportFileOpen) {
+					this.app.workspace.openLinkText(path, path, this.settings.exportFileNewLeaf);
+				}
 			}
 		});
 	}
