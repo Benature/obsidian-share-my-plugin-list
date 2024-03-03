@@ -43,12 +43,25 @@ export default class ShareMyPlugin extends Plugin {
 
 				const vault = this.app.vault;
 				const path = this.settings.exportFilePath;
+				await this.touchFolder(vault, path.split(/[\/\\]/).slice(0, -1).join("/"));
 				if (await vault.adapter.exists(path)) { await vault.adapter.remove(path) }
 				await vault.create(path, content);
 				new Notice(`Exported plugin ${this.settings.exportFileFormat} to ${path}.`);
 
 			}
 		});
+	}
+
+	async touchFolder(vault: any, folder: string) {
+		console.log(`touching ${folder}`);
+		if (await vault.adapter.exists(folder)) {
+			return;
+		}
+		const folders = folder.split(/[\/\\]/);
+		if (folders.length > 1) {
+			await this.touchFolder(vault, folders.slice(0, -1).join("/"));
+		}
+		await vault.adapter.mkdir(folder);
 	}
 
 	async loadSettings() {
