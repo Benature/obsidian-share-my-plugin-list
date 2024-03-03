@@ -13,9 +13,32 @@ This plugin helps you to share/recommend the plugins you are using to others.
 <img src="https://s2.loli.net/2024/01/24/1STZknQCtmu4qwi.gif" />
 </center>
 
-## Install
+## Some feature descriptions
 
-This plugin is in the progress of plugin community release.
+### Export to file
+
+You can export the list of activated plugins to a file with command `Export to file`. The file that will be saved in your vault folder can be configured in the plugin settings.
+
+The exported content is surrounded by `<!-- ShareMyPlugin begin -->` and `<!-- ShareMyPlugin end -->`:
+```md
+<!-- ShareMyPlugin begin -->
+- Plugin 1
+- Plugin 2
+- ...
+<!-- ShareMyPlugin end -->
+```
+Contents between the comments will be overwritten by the plugin when you export again, whereas the contents outside the comments will be preserved.
+
+
+## Support
+
+If you find this plugin useful and would like to support its development, you can sponsor me via [Buy Me a Coffee ☕️](https://www.buymeacoffee.com/benature), WeChat, Alipay or [AiFaDian](https://afdian.net/a/Benature-K). Any amount is welcome, thank you!
+
+<p align="center">
+<img src="https://s2.loli.net/2024/01/30/jQ9fTSyBxvXRoOM.png" width="500px">
+</p>
+
+## Other install methods
 
 ### Install by [BRAT Plugin](https://obsidian.md/plugins?id=obsidian42-brat)
 
@@ -36,14 +59,3 @@ This plugin is in the progress of plugin community release.
 - `npm i`  install dependencies
 - `npm run dev` to start compilation in watch mode.
 - `npm run build`  to build production.
-
-## Todo
-- [ ] display plugin's name rather than its ID.
-
-## Support
-
-If you find this plugin useful and would like to support its development, you can sponsor me via [Buy Me a Coffee ☕️](https://www.buymeacoffee.com/benature), WeChat, Alipay or [AiFaDian](https://afdian.net/a/Benature-K). Any amount is welcome, thank you!
-
-<p align="center">
-<img src="https://s2.loli.net/2024/01/30/jQ9fTSyBxvXRoOM.png" width="500px">
-</p>

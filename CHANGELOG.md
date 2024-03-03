@@ -1,6 +1,8 @@
 # Changelog
 
-- [updated]: Export to file: create folder when the path is invalid #5
+- [updated] export to file: specify the overwrite location in file #7
+- [updated] Export to file: open file after exporting #6
+- [updated] Export to file: create folder when the path is invalid #5
 
 ## 0.1.0
 - [feature] new command: export to file [#2](https://github.com/Benature/obsidian-share-my-plugin-list/issues/2)
