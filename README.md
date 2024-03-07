@@ -15,6 +15,64 @@ This plugin helps you to share/recommend the plugins you are using to others.
 
 ## Some feature descriptions
 
+### Export as list
+
+Support active plugins or inactive plugins.
+
+<b><details><summary>Example</summary></b>
+
+Preview:
+- [**Dataview**](https://obsidian.md/plugins?id=dataview) by [*Michael Brenan*](https://github.com/blacksmithgu)
+- [**Text Format**](https://obsidian.md/plugins?id=obsidian-text-format) by [*Benature*](https://github.com/Benature) [☕️](https://www.buymeacoffee.com/benature) / [⚡️](https://afdian.net/a/Benature-K) / [♡](https://s2.loli.net/2024/01/30/jQ9fTSyBxvXRoOM.png)
+- [**Metadata Icon**](https://obsidian.md/plugins?id=metadata-icon) by [*Benature*](https://github.com/Benature) [☕️](https://www.buymeacoffee.com/benature) / [⚡️](https://afdian.net/a/Benature-K) / [♡](https://s2.loli.net/2024/01/30/jQ9fTSyBxvXRoOM.png)
+
+
+Source:
+```md
+- [**Dataview**](https://obsidian.md/plugins?id=dataview) by [*Michael Brenan*](https://github.com/blacksmithgu)
+- [**Text Format**](https://obsidian.md/plugins?id=obsidian-text-format) by [*Benature*](https://github.com/Benature) [☕️](https://www.buymeacoffee.com/benature) / [⚡️](https://afdian.net/a/Benature-K) / [♡](https://s2.loli.net/2024/01/30/jQ9fTSyBxvXRoOM.png)
+- [**Metadata Icon**](https://obsidian.md/plugins?id=metadata-icon) by [*Benature*](https://github.com/Benature) [☕️](https://www.buymeacoffee.com/benature) / [⚡️](https://afdian.net/a/Benature-K) / [♡](https://s2.loli.net/2024/01/30/jQ9fTSyBxvXRoOM.png)
+```
+
+</details>
+
+
+
+
+
+### Export as table
+
+Support active plugins or inactive plugins.
+
+<b><details><summary>Example</summary></b>
+
+Preview:
+
+| Name                                                                   | Author                                                                                                                                                                              | Version |
+| ---------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- |
+| [**Dataview**](https://obsidian.md/plugins?id=dataview)                | [Michael Brenan](https://github.com/blacksmithgu)                                                                                                                                   | 0.5.64  |
+| [**Text Format**](https://obsidian.md/plugins?id=obsidian-text-format) | [Benature](https://github.com/Benature) [☕️](https://www.buymeacoffee.com/benature) / [⚡️](https://afdian.net/a/Benature-K) / [♡](https://s2.loli.net/2024/01/30/jQ9fTSyBxvXRoOM.png) | 2.6.0   |
+| [**Metadata Icon**](https://obsidian.md/plugins?id=metadata-icon)      | [Benature](https://github.com/Benature) [☕️](https://www.buymeacoffee.com/benature) / [⚡️](https://afdian.net/a/Benature-K) / [♡](https://s2.loli.net/2024/01/30/jQ9fTSyBxvXRoOM.png) | 0.0.9   |
+| [**Plugin Reloader**](https://obsidian.md/plugins?id=plugin-reloader)  | [Benature](https://github.com/Benature) [☕️](https://www.buymeacoffee.com/benature)/[⚡️](https://afdian.net/a/Benature-K)/[♡](https://s2.loli.net/2024/01/30/jQ9fTSyBxvXRoOM.png)     | 0.0.2   |
+| [**Metadata Hider**](https://obsidian.md/plugins?id=metadata-hider)    | [Benature](https://github.com/Benature) [☕️](https://www.buymeacoffee.com/benature)/[⚡️](https://afdian.net/a/Benature-K)/[♡](https://s2.loli.net/2024/01/30/jQ9fTSyBxvXRoOM.png)     | 0.1.1   |
+
+
+Source:
+
+```md
+| Name                                                                   | Author                                                                                                                                                                              | Version |
+| ---------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- |
+| [**Dataview**](https://obsidian.md/plugins?id=dataview)                | [Michael Brenan](https://github.com/blacksmithgu)                                                                                                                                   | 0.5.64  |
+| [**Text Format**](https://obsidian.md/plugins?id=obsidian-text-format) | [Benature](https://github.com/Benature) [☕️](https://www.buymeacoffee.com/benature) / [⚡️](https://afdian.net/a/Benature-K) / [♡](https://s2.loli.net/2024/01/30/jQ9fTSyBxvXRoOM.png) | 2.6.0   |
+| [**Metadata Icon**](https://obsidian.md/plugins?id=metadata-icon)      | [Benature](https://github.com/Benature) [☕️](https://www.buymeacoffee.com/benature) / [⚡️](https://afdian.net/a/Benature-K) / [♡](https://s2.loli.net/2024/01/30/jQ9fTSyBxvXRoOM.png) | 0.0.9   |
+| [**Plugin Reloader**](https://obsidian.md/plugins?id=plugin-reloader)  | [Benature](https://github.com/Benature) [☕️](https://www.buymeacoffee.com/benature)/[⚡️](https://afdian.net/a/Benature-K)/[♡](https://s2.loli.net/2024/01/30/jQ9fTSyBxvXRoOM.png)     | 0.0.2   |
+| [**Metadata Hider**](https://obsidian.md/plugins?id=metadata-hider)    | [Benature](https://github.com/Benature) [☕️](https://www.buymeacoffee.com/benature)/[⚡️](https://afdian.net/a/Benature-K)/[♡](https://s2.loli.net/2024/01/30/jQ9fTSyBxvXRoOM.png)     | 0.1.1   |
+```
+
+
+</details>
+
+
 ### Export to file
 
 You can export the list of activated plugins to a file with command `Export to file`. The file that will be saved in your vault folder can be configured in the plugin settings.
