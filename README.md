@@ -13,13 +13,13 @@ This plugin helps you to share/recommend the plugins you are using to others.
 <img src="https://s2.loli.net/2024/01/24/1STZknQCtmu4qwi.gif" />
 </center>
 
-## Some feature descriptions
+## Feature descriptions
 
 ### Export as list
 
 Support active plugins or inactive plugins.
 
-<b><details><summary>Example</summary></b>
+<details><summary>Example</summary>
 
 Preview:
 - [**Dataview**](https://obsidian.md/plugins?id=dataview) by [*Michael Brenan*](https://github.com/blacksmithgu)
@@ -44,7 +44,7 @@ Source:
 
 Support active plugins or inactive plugins.
 
-<b><details><summary>Example</summary></b>
+<details><summary>Example</summary>
 
 Preview:
 
@@ -53,8 +53,8 @@ Preview:
 | [**Dataview**](https://obsidian.md/plugins?id=dataview)                | [Michael Brenan](https://github.com/blacksmithgu)                                                                                                                                   | 0.5.64  |
 | [**Text Format**](https://obsidian.md/plugins?id=obsidian-text-format) | [Benature](https://github.com/Benature) [☕️](https://www.buymeacoffee.com/benature) / [⚡️](https://afdian.net/a/Benature-K) / [♡](https://s2.loli.net/2024/01/30/jQ9fTSyBxvXRoOM.png) | 2.6.0   |
 | [**Metadata Icon**](https://obsidian.md/plugins?id=metadata-icon)      | [Benature](https://github.com/Benature) [☕️](https://www.buymeacoffee.com/benature) / [⚡️](https://afdian.net/a/Benature-K) / [♡](https://s2.loli.net/2024/01/30/jQ9fTSyBxvXRoOM.png) | 0.0.9   |
-| [**Plugin Reloader**](https://obsidian.md/plugins?id=plugin-reloader)  | [Benature](https://github.com/Benature) [☕️](https://www.buymeacoffee.com/benature)/[⚡️](https://afdian.net/a/Benature-K)/[♡](https://s2.loli.net/2024/01/30/jQ9fTSyBxvXRoOM.png)     | 0.0.2   |
-| [**Metadata Hider**](https://obsidian.md/plugins?id=metadata-hider)    | [Benature](https://github.com/Benature) [☕️](https://www.buymeacoffee.com/benature)/[⚡️](https://afdian.net/a/Benature-K)/[♡](https://s2.loli.net/2024/01/30/jQ9fTSyBxvXRoOM.png)     | 0.1.1   |
+| [**Plugin Reloader**](https://obsidian.md/plugins?id=plugin-reloader)  | [Benature](https://github.com/Benature) [☕️](https://www.buymeacoffee.com/benature) / [⚡️](https://afdian.net/a/Benature-K) / [♡](https://s2.loli.net/2024/01/30/jQ9fTSyBxvXRoOM.png) | 0.0.2   |
+| [**Metadata Hider**](https://obsidian.md/plugins?id=metadata-hider)    | [Benature](https://github.com/Benature) [☕️](https://www.buymeacoffee.com/benature) / [⚡️](https://afdian.net/a/Benature-K) / [♡](https://s2.loli.net/2024/01/30/jQ9fTSyBxvXRoOM.png) | 0.1.1   |
 
 
 Source:
@@ -65,8 +65,8 @@ Source:
 | [**Dataview**](https://obsidian.md/plugins?id=dataview)                | [Michael Brenan](https://github.com/blacksmithgu)                                                                                                                                   | 0.5.64  |
 | [**Text Format**](https://obsidian.md/plugins?id=obsidian-text-format) | [Benature](https://github.com/Benature) [☕️](https://www.buymeacoffee.com/benature) / [⚡️](https://afdian.net/a/Benature-K) / [♡](https://s2.loli.net/2024/01/30/jQ9fTSyBxvXRoOM.png) | 2.6.0   |
 | [**Metadata Icon**](https://obsidian.md/plugins?id=metadata-icon)      | [Benature](https://github.com/Benature) [☕️](https://www.buymeacoffee.com/benature) / [⚡️](https://afdian.net/a/Benature-K) / [♡](https://s2.loli.net/2024/01/30/jQ9fTSyBxvXRoOM.png) | 0.0.9   |
-| [**Plugin Reloader**](https://obsidian.md/plugins?id=plugin-reloader)  | [Benature](https://github.com/Benature) [☕️](https://www.buymeacoffee.com/benature)/[⚡️](https://afdian.net/a/Benature-K)/[♡](https://s2.loli.net/2024/01/30/jQ9fTSyBxvXRoOM.png)     | 0.0.2   |
-| [**Metadata Hider**](https://obsidian.md/plugins?id=metadata-hider)    | [Benature](https://github.com/Benature) [☕️](https://www.buymeacoffee.com/benature)/[⚡️](https://afdian.net/a/Benature-K)/[♡](https://s2.loli.net/2024/01/30/jQ9fTSyBxvXRoOM.png)     | 0.1.1   |
+| [**Plugin Reloader**](https://obsidian.md/plugins?id=plugin-reloader)  | [Benature](https://github.com/Benature) [☕️](https://www.buymeacoffee.com/benature) / [⚡️](https://afdian.net/a/Benature-K) / [♡](https://s2.loli.net/2024/01/30/jQ9fTSyBxvXRoOM.png) | 0.0.2   |
+| [**Metadata Hider**](https://obsidian.md/plugins?id=metadata-hider)    | [Benature](https://github.com/Benature) [☕️](https://www.buymeacoffee.com/benature) / [⚡️](https://afdian.net/a/Benature-K) / [♡](https://s2.loli.net/2024/01/30/jQ9fTSyBxvXRoOM.png) | 0.1.1   |
 ```
 
 

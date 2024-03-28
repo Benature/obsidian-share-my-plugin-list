@@ -90,7 +90,7 @@ export default class ShareMyPlugin extends Plugin {
 				content = this.genTable(plugins);
 				break;
 			default:
-				new Notice(`Unknow export file format: ${this.settings.exportFileFormat}`);
+				new Notice(`Unknown export file format: ${this.settings.exportFileFormat}`);
 				return;
 		}
 
@@ -135,6 +135,9 @@ export default class ShareMyPlugin extends Plugin {
 				line += ` by [*${m.author2}*](${m.authorUrl})`
 			}
 			line += processFunding(m);
+			if (this.settings.descriptionLength >= 0) {
+				line += `\n    - ${m?.description}`
+			}
 			text.push(line);
 		}
 		this.debug(text);
@@ -145,10 +148,11 @@ export default class ShareMyPlugin extends Plugin {
 		this.debug("genTable")
 		// const plugins = this.getActivePlugins();
 		const t = Locals.get();
+		const hasDesc = this.settings.descriptionLength >= 0;
 
 		let text: string[] = [""];
-		text.push(t.genTableTemplate.Heading);
-		text.push(t.genTableTemplate.Align);
+		text.push(t.genTableTemplate.Heading + (hasDesc ? t.genTableTemplate.headerDescription : ""));
+		text.push(t.genTableTemplate.Align + (hasDesc ? "---|" : ""));
 
 		for (let key in plugins) {
 			this.debug(plugins[key]);
@@ -159,7 +163,17 @@ export default class ShareMyPlugin extends Plugin {
 				author = `[${m?.author2}](${m?.authorUrl})`
 			}
 			author += processFunding(m);
-			text.push(`|${name}|${author}|${m?.version}|`);
+
+			let line = `|${name}|${author}|${m?.version}|`;
+			if (hasDesc) {
+				let description = m?.description;
+				if (this.settings.descriptionLength > 0 && description.length > this.settings.descriptionLength) {
+					description = description.slice(0, this.settings.descriptionLength).replace(/ +.{1,8}$/, "");
+					description += "...";
+				}
+				line += `${description}|`;
+			}
+			text.push(line);
 		}
 		this.debug(text)
 		return text.join('\n') + "\n";

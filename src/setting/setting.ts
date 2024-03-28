@@ -1,4 +1,4 @@
-import { Setting, PluginSettingTab, App, ButtonComponent } from "obsidian";
+import { Setting, PluginSettingTab, App, ButtonComponent, Notice } from "obsidian";
 import ShareMyPlugin from "../../main";
 
 import { FileSuggest } from "./suggester/FileSuggest";
@@ -12,6 +12,7 @@ export interface PluginSettings {
 	exportFileNewLeaf: boolean,
 	exportFileWhenLoaded: boolean,
 	debugMode: boolean,
+	descriptionLength: number
 }
 
 export const DEFAULT_SETTINGS: PluginSettings = {
@@ -21,6 +22,7 @@ export const DEFAULT_SETTINGS: PluginSettings = {
 	exportFileNewLeaf: true,
 	exportFileWhenLoaded: false,
 	debugMode: false,
+	descriptionLength: 50,
 };
 
 export class ShareMyPluginSettingTab extends PluginSettingTab {
@@ -35,12 +37,28 @@ export class ShareMyPluginSettingTab extends PluginSettingTab {
 		let { containerEl } = this;
 
 		containerEl.empty();
+		new Setting(this.containerEl)
+			.setName("Max length of description")
+			.setDesc("-1: do not output description. 0: output description no matter how long it is. >0: output description up to the specified length.")
+			.addText((cb) => {
+				cb.setPlaceholder("length")
+					.setValue(this.plugin.settings.descriptionLength.toString())
+					.onChange(async (newValue) => {
+						const v = Number(newValue);
+						if (Number.isNaN(v)) {
+							new Notice(`The length must be a number!`);
+						} else {
+							this.plugin.settings.descriptionLength = v;
+							await this.plugin.saveSettings();
+						}
+					});
+			});
 
 		containerEl.createEl("h2", { text: "Export to file" });
 		new Setting(this.containerEl)
 			.setName("Path of file to export")
 			.setDesc("IMPORTANT: This file will be overwritten by the plugin, i.e., old content would be deleted.")
-			.addSearch((cb) => {
+			.addText((cb) => {
 				new FileSuggest(this.app, cb.inputEl);
 				cb.setPlaceholder("output/ShareMyPlugin.md")
 					.setValue(this.plugin.settings.exportFilePath)
@@ -77,8 +95,8 @@ export class ShareMyPluginSettingTab extends PluginSettingTab {
 			});
 		if (this.plugin.settings.exportFileOpen) {
 			new Setting(containerEl)
-				.setName("Open in new leaf")
-				.setDesc("Open the exported file in a new leaf.")
+				.setName("Open in new tab")
+				.setDesc("Open the exported file in a new tab (leaf).")
 				.addToggle((toggle) => {
 					toggle
 						.setValue(this.plugin.settings.exportFileNewLeaf)

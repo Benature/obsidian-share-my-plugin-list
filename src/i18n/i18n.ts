@@ -9,6 +9,7 @@ const EN = {
 	genTableTemplate: {
 		Heading: "|Name|Author|Version|",
 		Align: "|----|------|-------|",
+		headerDescription: "Description|"
 	}
 }
 
@@ -22,7 +23,8 @@ const ZH = {
 	},
 	genTableTemplate: {
 		Heading: "|名称|作者|版本|",
-		Align: "|---|---|---|"
+		Align: "|---|---|---|",
+		headerDescription: "描述|",
 	}
 }
 
@@ -48,7 +50,7 @@ export class Locals {
 			case "zh":
 				return ZH;
 			case "zh-tw":
-				return ZHtw;
+				return ZH;
 			default:
 				return EN;
 		}
