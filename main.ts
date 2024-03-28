@@ -136,7 +136,7 @@ export default class ShareMyPlugin extends Plugin {
 			}
 			line += processFunding(m);
 			if (this.settings.descriptionLength >= 0) {
-				line += `\n    - ${m?.description}`
+				line += ` ^[${m?.description}]`
 			}
 			text.push(line);
 		}
