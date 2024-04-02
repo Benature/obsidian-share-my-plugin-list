@@ -27,40 +27,7 @@ export function processFunding(m: any): string {
 }
 
 
-export function processPlugins(originPlugins: any) {
-	let plugins: any = {};
-	for (let name in originPlugins) {
-		try {
-			let plugin = originPlugins[name];
-			// this.debug(plugin);
-			plugin.manifest.pluginUrl = `https://obsidian.md/plugins?id=${plugin.manifest.id}`;
-			plugin.manifest["author2"] = plugin.manifest.author?.replace(/<.*?@.*?\..*?>/g, "").trim(); // remove email address
-			plugins[name] = plugin;
-		} catch (e) {
-			console.error(name, e)
-		}
-	}
-	if ("obsidian42-brat" in plugins == false) {
-		return plugins;
-	}
-	const BRAT = plugins["obsidian42-brat"];
-	for (let p of BRAT.settings.pluginList) {
-		const pSplit = p.split("/");
-		let githubAuthor: string = pSplit[0], name: string = pSplit[1];
-		let find = false;
-		if (name.toLowerCase() in plugins) {
-			find = true;
-		} else {
-			name = name.toLowerCase().replace(/^obsidian-?/g, "");
-			if (name in plugins) { find = true; }
-		}
 
-		if (find) {
-			plugins[name].manifest.pluginUrl = `https://github.com/${p}`;
-		}
-	}
-	return plugins;
-}
 
 export async function touchFolder(vault: any, folder: string, debug: boolean = false) {
 	if (debug) {

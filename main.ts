@@ -1,11 +1,13 @@
-import { App, Editor, MarkdownView, Modal, Notice, Plugin, normalizePath } from 'obsidian';
+import { App, Editor, MarkdownView, Modal, Notice, ObsidianProtocolData, Plugin, normalizePath } from 'obsidian';
 import { PluginSettings, DEFAULT_SETTINGS, ShareMyPluginSettingTab as ShareMyPluginSettingTab } from "src/setting/setting";
 import * as fs from 'fs';
 import { Locals } from "./src/i18n/i18n";
-import { processFunding, processPlugins, touchFolder } from "./src/utils"
+import { processFunding, touchFolder } from "./src/utils"
+import PluginInstaller from 'src/installer';
 
 export default class ShareMyPlugin extends Plugin {
 	settings: PluginSettings;
+	installer: PluginInstaller;
 
 	async loadSettings() {
 		this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
@@ -20,21 +22,22 @@ export default class ShareMyPlugin extends Plugin {
 		const t = Locals.get();
 		await this.loadSettings();
 		this.addSettingTab(new ShareMyPluginSettingTab(this.app, this));
+		this.installer = new PluginInstaller(this);
 
 
 		this.addCommand({
 			id: 'generate-list-of-active-plugins',
 			name: t.command.GenerateActiveList,
-			editorCallback: (editor: Editor, view: MarkdownView) => {
-				const plugins = this.getActivePlugins();
+			editorCallback: async (editor: Editor, view: MarkdownView) => {
+				const plugins = await this.getActivePlugins();
 				editor.replaceSelection(this.genList(plugins));
 			}
 		});
 		this.addCommand({
 			id: 'generate-table-of-active-plugins',
 			name: t.command.GenerateActiveTable,
-			editorCallback: (editor: Editor, view: MarkdownView) => {
-				const plugins = this.getActivePlugins();
+			editorCallback: async (editor: Editor, view: MarkdownView) => {
+				const plugins = await this.getActivePlugins();
 				editor.replaceSelection(this.genTable(plugins));
 			}
 		});
@@ -62,6 +65,16 @@ export default class ShareMyPlugin extends Plugin {
 			}
 		});
 
+		this.registerObsidianProtocolHandler("SP-install", (params: ObsidianProtocolData) => {
+			let args = {
+				id: params.id,
+				version: params?.version ?? "",
+				enable: ["", "true", "1"].includes(params.enable.toLowerCase()),
+				github: params.github ?? "",
+			}
+			this.installer.installPlugin(args.id, args.version, args.enable);
+		})
+
 		if (this.settings.exportFileWhenLoaded) {
 			setTimeout(async () => {
 				await this.exportToFile(false);
@@ -69,7 +82,6 @@ export default class ShareMyPlugin extends Plugin {
 		}
 
 		this.getInactivePlugins();
-
 	}
 
 	debug(...args: any[]): void {
@@ -81,7 +93,7 @@ export default class ShareMyPlugin extends Plugin {
 	async exportToFile(open = true) {
 		this.debug("exportToFile")
 		let content: string;
-		const plugins = this.getActivePlugins();
+		const plugins = await this.getActivePlugins();
 		switch (this.settings.exportFileFormat) {
 			case "list":
 				content = this.genList(plugins);
@@ -119,8 +131,6 @@ export default class ShareMyPlugin extends Plugin {
 		}
 	}
 
-
-
 	genList(plugins: any): string {
 		this.debug("genList");
 		// const plugins = this.getActivePlugins();
@@ -130,7 +140,7 @@ export default class ShareMyPlugin extends Plugin {
 			// this.debug(key)
 			const m = plugins[key].manifest;
 			this.debug(m)
-			let line = `- [**${m.name}**](${m.pluginUrl})`
+			let line = `- [⬇️](${m.installLink}) [**${m.name}**](${m.pluginUrl})`
 			if (m.author && m.authorUrl) {
 				line += ` by [*${m.author2}*](${m.authorUrl})`
 			}
@@ -145,6 +155,7 @@ export default class ShareMyPlugin extends Plugin {
 	}
 
 	genTable(plugins: any): string {
+		console.log(plugins)
 		this.debug("genTable")
 		// const plugins = this.getActivePlugins();
 		const t = Locals.get();
@@ -157,7 +168,7 @@ export default class ShareMyPlugin extends Plugin {
 		for (let key in plugins) {
 			this.debug(plugins[key]);
 			const m = plugins[key].manifest;
-			let name = `[**${m.name}**](${m.pluginUrl})`
+			let name = `[**${m.name}**](${m.pluginUrl}) [⬇️](${m.installLink})`
 			let author = "";
 			if (m.author && m.authorUrl) {
 				author = `[${m?.author2}](${m?.authorUrl})`
@@ -179,11 +190,11 @@ export default class ShareMyPlugin extends Plugin {
 		return text.join('\n') + "\n";
 	}
 
-	getActivePlugins() {
+	async getActivePlugins() {
 		this.debug("getActivePlugins");
 		// @ts-ignore
 		const originPlugins = this.app.plugins.plugins;
-		return processPlugins(originPlugins);
+		return await this.processPlugins(originPlugins);
 	}
 
 	async getInactivePlugins() {
@@ -222,8 +233,36 @@ export default class ShareMyPlugin extends Plugin {
 				}
 			}
 		}
-		return processPlugins(pluginsArray);
+		return await this.processPlugins(pluginsArray);
 	}
+
+	async processPlugins(originPlugins: any) {
+		let plugins: any = {};
+		for (let name in originPlugins) {
+			try {
+				let plugin = originPlugins[name];
+				plugin.manifest.pluginUrl = `https://obsidian.md/plugins?id=${plugin.manifest.id}`;
+				plugin.manifest["author2"] = plugin.manifest.author?.replace(/<.*?@.*?\..*?>/g, "").trim(); // remove email address
+				plugin.manifest["installLink"] = `obsidian://SP-install?id=${plugin.manifest.id}&enable=true`;
+				plugins[name] = plugin;
+			} catch (e) {
+				console.error(name, e)
+			}
+		}
+		if ("obsidian42-brat" in plugins == false) {
+			return plugins;
+		}
+		const BRAT = plugins["obsidian42-brat"];
+		for (let repo of BRAT.settings.pluginList) {
+			const manifest = await fetch(`https://raw.githubusercontent.com/${repo}/HEAD/manifest.json`).then(r => r.json());
+			if (!(manifest.id in this.installer.communityPlugins)) {
+				plugins[manifest.id].manifest.pluginUrl = `https://github.com/${repo}`;
+				plugins[manifest.id].manifest["installLink"] = `obsidian://SP-install?id=${plugins[manifest.id].manifest.id}&enable=true&github=${repo}`;
+			}
+		}
+		return plugins;
+	}
+
 
 	onunload() {
 	}
