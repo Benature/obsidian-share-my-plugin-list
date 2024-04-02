@@ -1,5 +1,5 @@
 import ShareMyPlugin from "main";
-import { Notice, debounce } from "obsidian";
+import { Notice, ObsidianProtocolData, debounce } from "obsidian";
 
 export let communityPlugins: any;
 
@@ -69,5 +69,15 @@ export default class pluginInstaller {
 		else {
 			await pluginRegistry.disablePlugin(id);
 		}
+	}
+
+	public async parseAndInstallPlugin(params: ObsidianProtocolData) {
+		let args = {
+			id: params.id,
+			version: params?.version ?? "",
+			enable: ["", "true", "1"].includes(params.enable.toLowerCase()),
+			github: params.github ?? "",
+		}
+		this.installPlugin(args.id, args.version, args.enable);
 	}
 }

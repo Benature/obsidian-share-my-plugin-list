@@ -65,14 +65,28 @@ export default class ShareMyPlugin extends Plugin {
 			}
 		});
 
-		this.registerObsidianProtocolHandler("SP-install", (params: ObsidianProtocolData) => {
-			let args = {
-				id: params.id,
-				version: params?.version ?? "",
-				enable: ["", "true", "1"].includes(params.enable.toLowerCase()),
-				github: params.github ?? "",
+		this.addCommand({
+			id: 'install-all',
+			name: t.command.InstallAllInFill,
+			editorCallback: async (editor: Editor, view: MarkdownView) => {
+				let text = editor.getValue();
+				const urls: Set<string> = new Set();
+				text.match(/obsidian:\/\/SP-install\?[^\s\]\)]+/g)?.forEach(url => {
+					urls.add(url);
+				})
+				for (const urlString of urls) {
+					const url = new URL(urlString);
+					let params: ObsidianProtocolData = { action: url.pathname.replace(/^\/+/g, "") };
+					for (const k of url.searchParams.keys()) {
+						params[k] = url.searchParams.get(k) ?? "";
+					}
+					await this.installer.parseAndInstallPlugin(params);
+				}
 			}
-			this.installer.installPlugin(args.id, args.version, args.enable);
+		});
+
+		this.registerObsidianProtocolHandler("SP-install", async (params: ObsidianProtocolData) => {
+			await this.installer.parseAndInstallPlugin(params);
 		})
 
 		if (this.settings.exportFileWhenLoaded) {

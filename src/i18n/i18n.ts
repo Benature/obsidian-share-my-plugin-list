@@ -5,6 +5,7 @@ const EN = {
 		GenerateInactiveList: 'Export inactive plugins as list',
 		GenerateInactiveTable: 'Export inactive plugins as table',
 		ExportFile: "Export to file",
+		InstallAllInFill: "Install all plugins by link in the file"
 	},
 	genTableTemplate: {
 		Heading: "|Name|Author|Version|",
@@ -19,7 +20,8 @@ const ZH = {
 		GenerateActiveTable: '导出启用插件表格',
 		GenerateInactiveList: '导出禁用插件列表',
 		GenerateInactiveTable: '导出禁用插件表格',
-		ExportFile: "导出到文件"
+		ExportFile: "导出到文件",
+		InstallAllInFill: "在文件中通过链接安装所有插件"
 	},
 	genTableTemplate: {
 		Heading: "|名称|作者|版本|",
