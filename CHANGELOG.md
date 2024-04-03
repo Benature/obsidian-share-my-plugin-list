@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.3.0-beta
+## 0.3.0
 - [feature] protocol link for install plugins
 
 ## 0.2.1
