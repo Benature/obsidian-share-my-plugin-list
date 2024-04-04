@@ -1,19 +1,33 @@
 # Share My Plugin List
 
+<div align="center">
+
 ![Obsidian Downloads](https://img.shields.io/badge/dynamic/json?logo=obsidian&color=%23483699&label=downloads&query=%24%5B%22share-my-plugin-list%22%5D.downloads&url=https%3A%2F%2Fraw.githubusercontent.com%2Fobsidianmd%2Fobsidian-releases%2Fmaster%2Fcommunity-plugin-stats.json) ![GitHub stars](https://img.shields.io/github/stars/Benature/obsidian-share-my-plugin-list?style=flat) ![latest download](https://img.shields.io/github/downloads/Benature/obsidian-share-my-plugin-list/latest/total?style=plastic) 
+[![Github release](https://img.shields.io/github/manifest-json/v/Benature/obsidian-share-my-plugin-list?color=blue)](https://github.com/Benature/obsidian-share-my-plugin-list/releases/latest) ![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/Benature/obsidian-share-my-plugin-list?include_prereleases&label=BRAT%20beta)
 
 [Click to install](https://obsidian.md/plugins?id=share-my-plugin-list)
 
-Share the obsidian plugins that are activated. 
+</div>
 
 This plugin helps you to share/recommend the plugins you are using to others.
+
+- Share the obsidian plugins that are active or inactive in your vault. 
+- Click ⬇️ to install plugin directly. (v0.3.3+)
+- `Install all ...` command in Command palette to install all uninstalled plugins in one command! (v0.3.3+)
+
+>[Roadmap](https://github.com/Benature/obsidian-share-my-plugin-list/labels/status%2Fvote)
 
 <!-- ![ShareMyPluginList](https://github.com/Benature/obsidian-share-my-plugin-list/assets/35028647/f203165c-4c84-4fc4-9122-346f7ec7b34b) -->
 <center>
 <img src="https://s2.loli.net/2024/01/24/1STZknQCtmu4qwi.gif" />
 </center>
 
+> Simple Chinese introduction: [公众号](https://mp.weixin.qq.com/s/WZEncNTYAwyHFB5xfoY4Zg) / [小红书](http://xhslink.com/JgqVzF) 
+> （如有汉化需要请联系`木一Benature`）
+
+
 ## Feature descriptions
+> If you are looking forward to some new features, you can discuss the feature request in the [issues](https://github.com/Benature/obsidian-share-my-plugin-list).
 
 ### Export as list
 
