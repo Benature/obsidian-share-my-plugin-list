@@ -255,13 +255,15 @@ export default class ShareMyPlugin extends Plugin {
 		for (let name in originPlugins) {
 			try {
 				// let plugin = originPlugins[name];
-				let plugin = Object.assign({}, originPlugins[name]);
+				// let plugin = Object.assign({}, originPlugins[name]);
+				let plugin = { ...originPlugins[name] }; // new an object and make it extensible
 				plugin.manifest["pluginUrl"] = `https://obsidian.md/plugins?id=${plugin.manifest.id}`;
 				plugin.manifest["author2"] = plugin.manifest.author?.replace(/<.*?@.*?\..*?>/g, "").trim(); // remove email address
 				plugin.manifest["installLink"] = `obsidian://SP-install?id=${plugin.manifest.id}&enable=true`;
 				plugins[name] = plugin;
 			} catch (e) {
-				console.error(name, e)
+				console.error(name, e);
+				console.log(originPlugins[name]);
 			}
 		}
 		if ("obsidian42-brat" in plugins == false) {
@@ -277,7 +279,6 @@ export default class ShareMyPlugin extends Plugin {
 		}
 		return plugins;
 	}
-
 
 	onunload() {
 	}
