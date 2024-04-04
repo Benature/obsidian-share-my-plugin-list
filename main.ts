@@ -169,7 +169,6 @@ export default class ShareMyPlugin extends Plugin {
 	}
 
 	genTable(plugins: any): string {
-		console.log(plugins)
 		this.debug("genTable")
 		// const plugins = this.getActivePlugins();
 		const t = Locals.get();
@@ -214,49 +213,65 @@ export default class ShareMyPlugin extends Plugin {
 	async getInactivePlugins() {
 		this.debug("getInactivePlugins");
 		// @ts-ignore
-		const activePlugins = this.app.plugins.plugins;
+		const appPlugins = this.app.plugins;
+		const activePlugins = appPlugins.plugins;
 		const activePluginFolderName: string[] = [];
 		for (let n in activePlugins) {
 			activePluginFolderName.push(activePlugins[n].manifest.dir.split(/[\/\\]/)[2]);
 		}
 		this.debug(activePluginFolderName)
 
-		const vault = this.app.vault
+		// const vault = this.app.vault
 		// @ts-ignore
-		const basePath = vault.adapter.basePath;
-		const pluginPath = normalizePath(basePath + "/" + vault.configDir + "/plugins");
+		// const basePath = vault.adapter.basePath;
+		// const pluginPath = normalizePath(basePath + "/" + vault.configDir + "/plugins");
 
-		const pluginsArray: { [key: string]: any } = {};
-		const pluginFolderNames: Promise<string[]> = new Promise((resolve, reject) => {
-			fs.readdir(pluginPath, (err, files) => {
-				if (err) {
-					reject(err);
-				} else {
-					resolve(files);
-				}
-			});
-		});
-		for (let folderName of await pluginFolderNames) {
-			if (!activePluginFolderName.includes(folderName)) {
-				// @ts-ignore
-				const { plugins } = this.app;
-				const manifestPath = normalizePath(basePath + "/" + plugins.getPluginFolder() + "/" + folderName + "/manifest.json");
-				if (fs.existsSync(manifestPath)) {
-					const manifest = JSON.parse(fs.readFileSync(manifestPath, "utf-8"));
-					pluginsArray[manifest.id] = { manifest: manifest };
-				}
+		// const pluginsArray: { [key: string]: any } = {};
+
+		// all plugins (enable & disable)
+		const allPluginManifests = appPlugins.manifests;
+		const inactivePluginManifests: { [key: string]: any } = {};
+		for (const id in allPluginManifests) {
+			if (id in activePlugins) { continue; }
+			inactivePluginManifests[id] = {
+				manifest: allPluginManifests[id],
+				disabled: true,
 			}
 		}
-		return await this.processPlugins(pluginsArray);
+		// const inactivePluginManifests = allPluginManifests.filter(
+		// 	(p: { [key: string]: any }) => Object.keys(activePlugins).includes(p.id));
+		// console.log(inactivePluginManifests)
+		return inactivePluginManifests;
+
+		// const pluginFolderNames: Promise<string[]> = new Promise((resolve, reject) => {
+		// 	fs.readdir(pluginPath, (err, files) => {
+		// 		if (err) {
+		// 			reject(err);
+		// 		} else {
+		// 			resolve(files);
+		// 		}
+		// 	});
+		// });
+		// for (let folderName of await pluginFolderNames) {
+		// 	if (!activePluginFolderName.includes(folderName)) {
+		// 		// @ts-ignore
+		// 		const { plugins } = this.app;
+		// 		const manifestPath = normalizePath(basePath + "/" + plugins.getPluginFolder() + "/" + folderName + "/manifest.json");
+		// 		if (fs.existsSync(manifestPath)) {
+		// 			const manifest = JSON.parse(fs.readFileSync(manifestPath, "utf-8"));
+		// 			pluginsArray[manifest.id] = { manifest: manifest };
+		// 		}
+		// 	}
+		// }
+		// return await this.processPlugins(pluginsArray);
 	}
 
 	async processPlugins(originPlugins: any) {
 		let plugins: any = {};
 		for (let name in originPlugins) {
 			try {
-				// let plugin = originPlugins[name];
-				// let plugin = Object.assign({}, originPlugins[name]);
 				let plugin = { ...originPlugins[name] }; // new an object and make it extensible
+				plugin.manifest = { ...originPlugins[name].manifest }
 				plugin.manifest["pluginUrl"] = `https://obsidian.md/plugins?id=${plugin.manifest.id}`;
 				plugin.manifest["author2"] = plugin.manifest.author?.replace(/<.*?@.*?\..*?>/g, "").trim(); // remove email address
 				plugin.manifest["installLink"] = `obsidian://SP-install?id=${plugin.manifest.id}&enable=true`;
@@ -264,6 +279,8 @@ export default class ShareMyPlugin extends Plugin {
 			} catch (e) {
 				console.error(name, e);
 				console.log(originPlugins[name]);
+				console.log(originPlugins[name].manifest);
+				console.log(typeof originPlugins[name].manifest);
 			}
 		}
 		if ("obsidian42-brat" in plugins == false) {
