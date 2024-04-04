@@ -254,8 +254,9 @@ export default class ShareMyPlugin extends Plugin {
 		let plugins: any = {};
 		for (let name in originPlugins) {
 			try {
-				let plugin = originPlugins[name];
-				plugin.manifest.pluginUrl = `https://obsidian.md/plugins?id=${plugin.manifest.id}`;
+				// let plugin = originPlugins[name];
+				let plugin = Object.assign({}, originPlugins[name]);
+				plugin.manifest["pluginUrl"] = `https://obsidian.md/plugins?id=${plugin.manifest.id}`;
 				plugin.manifest["author2"] = plugin.manifest.author?.replace(/<.*?@.*?\..*?>/g, "").trim(); // remove email address
 				plugin.manifest["installLink"] = `obsidian://SP-install?id=${plugin.manifest.id}&enable=true`;
 				plugins[name] = plugin;
