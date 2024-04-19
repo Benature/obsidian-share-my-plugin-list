@@ -289,7 +289,7 @@ export default class ShareMyPlugin extends Plugin {
 		const BRAT = plugins["obsidian42-brat"];
 		for (let repo of BRAT.settings.pluginList) {
 			const manifest = await fetch(`https://raw.githubusercontent.com/${repo}/HEAD/manifest.json`).then(r => r.json());
-			if (!(manifest.id in this.installer.communityPlugins)) {
+			if (!(manifest.id in this.installer.communityPlugins) && (manifest.id in originPlugins)) {
 				plugins[manifest.id].manifest.pluginUrl = `https://github.com/${repo}`;
 				plugins[manifest.id].manifest["installLink"] = `obsidian://SP-install?id=${plugins[manifest.id].manifest.id}&enable=true&github=${repo}`;
 			}
