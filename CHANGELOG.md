@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.3.6
+- [feature] Add original-order, ascending, and descending plugin name sorting [#16](https://github.com/Benature/obsidian-share-my-plugin-list/issues/16)
+- [feature] Optionally prefix exported filenames with a local timestamp [#17](https://github.com/Benature/obsidian-share-my-plugin-list/issues/17)
+
 ## 0.3.5
 - [fixed] Open the exported file in the configured tab [#15](https://github.com/Benature/obsidian-share-my-plugin-list/issues/15)
 - [fixed] Create export folders through the Vault API so they appear in the file explorer [#18](https://github.com/Benature/obsidian-share-my-plugin-list/issues/18)
