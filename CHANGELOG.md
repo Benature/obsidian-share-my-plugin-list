@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.3.5
+- [fixed] Open the exported file in the configured tab [#15](https://github.com/Benature/obsidian-share-my-plugin-list/issues/15)
+- [fixed] Create export folders through the Vault API so they appear in the file explorer [#18](https://github.com/Benature/obsidian-share-my-plugin-list/issues/18)
+- [fixed] Continue active-plugin exports when BRAT metadata is unavailable [#21](https://github.com/Benature/obsidian-share-my-plugin-list/issues/21)
+- [fixed] Validate description length without rejecting intermediate input such as `-` [#22](https://github.com/Benature/obsidian-share-my-plugin-list/issues/22)
+
 ## 0.3.4
 - [fixed] Show file suggestions in the window containing the settings input [#25](https://github.com/Benature/obsidian-share-my-plugin-list/issues/25)
 - [fixed] Include the existing guard for disabled BRAT plugins in the release build [#24](https://github.com/Benature/obsidian-share-my-plugin-list/issues/24)
