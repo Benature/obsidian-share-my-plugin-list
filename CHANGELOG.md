@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.3.4
+- [fixed] Show file suggestions in the window containing the settings input [#25](https://github.com/Benature/obsidian-share-my-plugin-list/issues/25)
+- [fixed] Include the existing guard for disabled BRAT plugins in the release build [#24](https://github.com/Benature/obsidian-share-my-plugin-list/issues/24)
+
 ## 0.3.0
 - [feature] protocol link for install plugins
 
