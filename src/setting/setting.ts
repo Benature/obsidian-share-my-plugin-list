@@ -5,9 +5,12 @@ import { FileSuggest } from "./suggester/FileSuggest";
 import { addFundingElement } from "./funding";
 
 
+export type PluginSortOrder = "off" | "asc" | "desc";
+
 export interface PluginSettings {
 	exportFilePath: string,
 	exportFileNameTimestamp: boolean,
+	pluginSortOrder: PluginSortOrder,
 	exportFileFormat: string,
 	exportFileOpen: boolean,
 	exportFileNewLeaf: boolean,
@@ -19,6 +22,7 @@ export interface PluginSettings {
 export const DEFAULT_SETTINGS: PluginSettings = {
 	exportFilePath: "ShareMyPlugin.md",
 	exportFileNameTimestamp: false,
+	pluginSortOrder: "off",
 	exportFileFormat: "list",
 	exportFileOpen: true,
 	exportFileNewLeaf: true,
@@ -63,6 +67,21 @@ export class ShareMyPluginSettingTab extends PluginSettingTab {
 						cb.setValue(this.plugin.settings.descriptionLength.toString());
 					}
 				});
+			});
+
+		new Setting(containerEl)
+			.setName("Sort plugins by name")
+			.setDesc("Sort all list and table outputs by plugin name in case-insensitive order, or preserve the original order.")
+			.addDropdown((dropdown) => {
+				dropdown
+					.addOption("off", "Original order")
+					.addOption("asc", "Ascending (A-Z)")
+					.addOption("desc", "Descending (Z-A)")
+					.setValue(this.plugin.settings.pluginSortOrder)
+					.onChange(async (value) => {
+						this.plugin.settings.pluginSortOrder = value as PluginSortOrder;
+						await this.plugin.saveSettings();
+					});
 			});
 
 		containerEl.createEl("h2", { text: "Export to file" });

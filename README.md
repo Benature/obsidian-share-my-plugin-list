@@ -87,6 +87,10 @@ Source:
 </details>
 
 
+### Sort output
+
+**Sort plugins by name** can sort active and inactive plugins in ascending (A-Z) or descending (Z-A), case-insensitive order. This applies to both list and table output, whether inserted into an editor or exported to a file. The default **Original order** option disables sorting.
+
 ### Export to file
 
 You can export the list of activated plugins to a file with command `Export to file`. The file that will be saved in your vault folder can be configured in the plugin settings.

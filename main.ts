@@ -150,12 +150,26 @@ export default class ShareMyPlugin extends Plugin {
 		}
 	}
 
+	getOrderedPluginKeys(plugins: Record<string, { manifest: { name?: string } }>): string[] {
+		const keys = Object.keys(plugins);
+		if (this.settings.pluginSortOrder !== "off") {
+			const direction = this.settings.pluginSortOrder === "desc" ? -1 : 1;
+			keys.sort((a, b) => {
+				const nameA = plugins[a].manifest.name ?? a;
+				const nameB = plugins[b].manifest.name ?? b;
+				const comparison = nameA.localeCompare(nameB, undefined, { sensitivity: "base" }) || a.localeCompare(b);
+				return comparison * direction;
+			});
+		}
+		return keys;
+	}
+
 	genList(plugins: any): string {
 		this.debug("genList");
 		// const plugins = this.getActivePlugins();
 		this.debug(plugins)
 		let text: string[] = [];
-		for (let key in plugins) {
+		for (const key of this.getOrderedPluginKeys(plugins)) {
 			// this.debug(key)
 			const m = plugins[key].manifest;
 			this.debug(m)
@@ -183,7 +197,7 @@ export default class ShareMyPlugin extends Plugin {
 		text.push(t.genTableTemplate.Heading + (hasDesc ? t.genTableTemplate.headerDescription : ""));
 		text.push(t.genTableTemplate.Align + (hasDesc ? "---|" : ""));
 
-		for (let key in plugins) {
+		for (const key of this.getOrderedPluginKeys(plugins)) {
 			this.debug(plugins[key]);
 			const m = plugins[key].manifest;
 			let name = `[**${m.name}**](${m.pluginUrl}) [⬇️](${m.installLink})`
