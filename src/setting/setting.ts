@@ -7,6 +7,7 @@ import { addFundingElement } from "./funding";
 
 export interface PluginSettings {
 	exportFilePath: string,
+	exportFileNameTimestamp: boolean,
 	exportFileFormat: string,
 	exportFileOpen: boolean,
 	exportFileNewLeaf: boolean,
@@ -17,6 +18,7 @@ export interface PluginSettings {
 
 export const DEFAULT_SETTINGS: PluginSettings = {
 	exportFilePath: "ShareMyPlugin.md",
+	exportFileNameTimestamp: false,
 	exportFileFormat: "list",
 	exportFileOpen: true,
 	exportFileNewLeaf: true,
@@ -66,13 +68,25 @@ export class ShareMyPluginSettingTab extends PluginSettingTab {
 		containerEl.createEl("h2", { text: "Export to file" });
 		new Setting(this.containerEl)
 			.setName("Path of file to export")
-			.setDesc("IMPORTANT: This file will be overwritten by the plugin, i.e., old content would be deleted.")
+			.setDesc("IMPORTANT: Without a filename timestamp, this file will be overwritten by the plugin, i.e., old content would be deleted.")
 			.addText((cb) => {
 				new FileSuggest(this.app, cb.inputEl);
 				cb.setPlaceholder("output/ShareMyPlugin.md")
 					.setValue(this.plugin.settings.exportFilePath)
 					.onChange(async (newValue) => {
 						this.plugin.settings.exportFilePath = newValue;
+						await this.plugin.saveSettings();
+					});
+			});
+
+		new Setting(containerEl)
+			.setName("Add timestamp to filename")
+			.setDesc("Prefix the filename with the local time in YYYY-MM-DD_HH-mm format, e.g. 2024-04-26_20-26-ShareMyPlugin.md.")
+			.addToggle((toggle) => {
+				toggle
+					.setValue(this.plugin.settings.exportFileNameTimestamp)
+					.onChange(async (value) => {
+						this.plugin.settings.exportFileNameTimestamp = value;
 						await this.plugin.saveSettings();
 					});
 			});

@@ -2,7 +2,7 @@ import { App, Editor, MarkdownView, Modal, Notice, ObsidianProtocolData, Plugin,
 import { PluginSettings, DEFAULT_SETTINGS, ShareMyPluginSettingTab as ShareMyPluginSettingTab } from "src/setting/setting";
 import * as fs from 'fs';
 import { Locals } from "./src/i18n/i18n";
-import { processFunding, touchFolder } from "./src/utils"
+import { addTimestampToFilePath, processFunding, touchFolder } from "./src/utils"
 import PluginInstaller from 'src/installer';
 
 export default class ShareMyPlugin extends Plugin {
@@ -126,7 +126,8 @@ export default class ShareMyPlugin extends Plugin {
 		this.debug(content)
 
 		const vault = this.app.vault;
-		const path = normalizePath(this.settings.exportFilePath);
+		const configuredPath = normalizePath(this.settings.exportFilePath);
+		const path = this.settings.exportFileNameTimestamp ? addTimestampToFilePath(configuredPath) : configuredPath;
 		await touchFolder(vault, path.split(/[\/\\]/).slice(0, -1).join("/"));
 		if (await vault.adapter.exists(path)) {
 			let contentOriginal = await vault.adapter.read(path);

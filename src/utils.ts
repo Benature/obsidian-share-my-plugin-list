@@ -29,6 +29,12 @@ export function processFunding(m: any): string {
 }
 
 
+export function addTimestampToFilePath(path: string, date: Date = new Date()): string {
+	const pad = (value: number) => value.toString().padStart(2, "0");
+	const timestamp = `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}_${pad(date.getHours())}-${pad(date.getMinutes())}`;
+	const lastSlash = path.lastIndexOf("/");
+	return `${path.slice(0, lastSlash + 1)}${timestamp}-${path.slice(lastSlash + 1)}`;
+}
 
 
 export async function touchFolder(vault: Vault, folder: string, debug: boolean = false) {

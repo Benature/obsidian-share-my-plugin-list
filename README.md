@@ -91,6 +91,8 @@ Source:
 
 You can export the list of activated plugins to a file with command `Export to file`. The file that will be saved in your vault folder can be configured in the plugin settings.
 
+When **Add timestamp to filename** is enabled, the export path keeps its configured directory and prefixes the filename with the local time in `YYYY-MM-DD_HH-mm` format. For example, `output/ShareMyPlugin.md` becomes `output/2024-04-26_20-26-ShareMyPlugin.md`. Files with different timestamps are preserved.
+
 The exported content is surrounded by `<!-- ShareMyPlugin begin -->` and `<!-- ShareMyPlugin end -->`:
 ```md
 <!-- ShareMyPlugin begin -->
