@@ -1,4 +1,4 @@
-import { App, Editor, MarkdownView, Modal, Notice, ObsidianProtocolData, Plugin, normalizePath } from 'obsidian';
+import { App, Editor, MarkdownView, Modal, Notice, ObsidianProtocolData, Plugin, TFile, normalizePath } from 'obsidian';
 import { PluginSettings, DEFAULT_SETTINGS, ShareMyPluginSettingTab as ShareMyPluginSettingTab } from "src/setting/setting";
 import * as fs from 'fs';
 import { Locals } from "./src/i18n/i18n";
@@ -126,7 +126,7 @@ export default class ShareMyPlugin extends Plugin {
 		this.debug(content)
 
 		const vault = this.app.vault;
-		const path = this.settings.exportFilePath;
+		const path = normalizePath(this.settings.exportFilePath);
 		await touchFolder(vault, path.split(/[\/\\]/).slice(0, -1).join("/"));
 		if (await vault.adapter.exists(path)) {
 			let contentOriginal = await vault.adapter.read(path);
@@ -141,7 +141,11 @@ export default class ShareMyPlugin extends Plugin {
 		new Notice(`Exported plugin ${this.settings.exportFileFormat} to ${path}.`);
 
 		if (open && this.settings.exportFileOpen) {
-			this.app.workspace.openLinkText(path, path, this.settings.exportFileNewLeaf);
+			const file = vault.getAbstractFileByPath(path);
+			if (file instanceof TFile) {
+				const leaf = this.app.workspace.getLeaf(this.settings.exportFileNewLeaf);
+				await leaf.openFile(file);
+			}
 		}
 	}
 
@@ -287,9 +291,20 @@ export default class ShareMyPlugin extends Plugin {
 			return plugins;
 		}
 		const BRAT = plugins["obsidian42-brat"];
-		for (let repo of BRAT.settings.pluginList) {
-			const manifest = await fetch(`https://raw.githubusercontent.com/${repo}/HEAD/manifest.json`).then(r => r.json());
-			if (!(manifest.id in this.installer.communityPlugins) && (manifest.id in originPlugins)) {
+		const communityPlugins = this.installer.communityPlugins ?? {};
+		for (const repo of BRAT.settings.pluginList ?? []) {
+			let manifest: { id: string };
+			try {
+				const response = await fetch(`https://raw.githubusercontent.com/${repo}/HEAD/manifest.json`);
+				if (!response.ok) {
+					throw new Error(`HTTP ${response.status}`);
+				}
+				manifest = await response.json();
+			} catch (e) {
+				console.warn(`Share My Plugin List: failed to fetch BRAT manifest for ${repo}; using the default plugin metadata.`, e);
+				continue;
+			}
+			if (!(manifest.id in communityPlugins) && (manifest.id in originPlugins)) {
 				plugins[manifest.id].manifest.pluginUrl = `https://github.com/${repo}`;
 				plugins[manifest.id].manifest["installLink"] = `obsidian://SP-install?id=${plugins[manifest.id].manifest.id}&enable=true&github=${repo}`;
 			}

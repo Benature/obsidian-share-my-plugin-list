@@ -1,4 +1,6 @@
 
+import { Vault } from "obsidian";
+
 export function processFunding(m: any): string {
 	let info: string = "";
 	if (m.fundingUrl) {
@@ -29,16 +31,16 @@ export function processFunding(m: any): string {
 
 
 
-export async function touchFolder(vault: any, folder: string, debug: boolean = false) {
+export async function touchFolder(vault: Vault, folder: string, debug: boolean = false) {
 	if (debug) {
 		console.log("touch Folder", folder);
 	}
-	if (await vault.adapter.exists(folder)) {
+	if (!folder || vault.getAbstractFileByPath(folder)) {
 		return;
 	}
 	const folders = folder.split(/[\/\\]/);
 	if (folders.length > 1) {
-		await touchFolder(vault, folders.slice(0, -1).join("/"));
+		await touchFolder(vault, folders.slice(0, -1).join("/"), debug);
 	}
-	await vault.adapter.mkdir(folder);
+	await vault.createFolder(folder);
 }

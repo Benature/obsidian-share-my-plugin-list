@@ -41,17 +41,26 @@ export class ShareMyPluginSettingTab extends PluginSettingTab {
 			.setName("Max length of description")
 			.setDesc("-1: do not output description. 0: output description no matter how long it is. >0: output description up to the specified length.")
 			.addText((cb) => {
+				const parseLength = (value: string): number | null => {
+					if (value.trim() === "") return null;
+					const parsed = Number(value);
+					return Number.isFinite(parsed) ? parsed : null;
+				};
 				cb.setPlaceholder("length")
 					.setValue(this.plugin.settings.descriptionLength.toString())
 					.onChange(async (newValue) => {
-						const v = Number(newValue);
-						if (Number.isNaN(v)) {
-							new Notice(`The length must be a number!`);
-						} else {
-							this.plugin.settings.descriptionLength = v;
+						const value = parseLength(newValue);
+						if (value !== null) {
+							this.plugin.settings.descriptionLength = value;
 							await this.plugin.saveSettings();
 						}
 					});
+				cb.inputEl.addEventListener("blur", () => {
+					if (parseLength(cb.inputEl.value) === null) {
+						new Notice(`The length must be a number!`);
+						cb.setValue(this.plugin.settings.descriptionLength.toString());
+					}
+				});
 			});
 
 		containerEl.createEl("h2", { text: "Export to file" });
