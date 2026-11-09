@@ -1,3 +1,5 @@
+import { getLanguage } from "obsidian";
+
 const EN = {
 	command: {
 		GenerateActiveList: 'Export active plugins as list',
@@ -30,24 +32,9 @@ const ZH = {
 	}
 }
 
-const ZHtw = {
-	command: {
-		GenerateActiveList: '匯出啟用插件列表',
-		GenerateActiveTable: '匯出啟用插件表格',
-		GenerateInactiveList: '匯出禁用插件列表',
-		GenerateInactiveTable: '匯出禁用插件表格',
-		ExportFile: "匯出到檔案"
-	},
-	genTableTemplate: {
-		Heading: "|名稱|作者|版本|",
-		Align: "|---|---|---|"
-	}
-}
-
-
 export class Locals {
 	static get() {
-		const lang = window.localStorage.getItem("language");
+		const lang = getLanguage();
 		switch (lang) {
 			case "zh":
 				return ZH;

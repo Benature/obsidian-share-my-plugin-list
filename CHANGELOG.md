@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.4.0
+- [fix] Resolve all Obsidian community review warnings and replace the custom suggestion implementation with AbstractInputSuggest
+- [updated] Adopt the declarative settings API and require Obsidian 1.13.0 or later
+- [chore] Update dependencies and release automation with build provenance
+
 ## 0.3.6
 - [feature] Add original-order, ascending, and descending plugin name sorting [#16](https://github.com/Benature/obsidian-share-my-plugin-list/issues/16)
 - [feature] Optionally prefix exported filenames with a local timestamp [#17](https://github.com/Benature/obsidian-share-my-plugin-list/issues/17)

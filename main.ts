@@ -1,9 +1,22 @@
-import { App, Editor, MarkdownView, Modal, Notice, ObsidianProtocolData, Plugin, TFile, normalizePath } from 'obsidian';
+import { Editor, MarkdownView, Notice, ObsidianProtocolData, Plugin, PluginManifest, TFile, normalizePath, requestUrl } from 'obsidian';
 import { PluginSettings, DEFAULT_SETTINGS, ShareMyPluginSettingTab as ShareMyPluginSettingTab } from "src/setting/setting";
-import * as fs from 'fs';
 import { Locals } from "./src/i18n/i18n";
 import { addTimestampToFilePath, processFunding, touchFolder } from "./src/utils"
 import PluginInstaller from 'src/installer';
+
+interface SharePluginManifest extends PluginManifest {
+	pluginUrl?: string;
+	author2?: string;
+	installLink?: string;
+}
+
+interface PluginEntry {
+	manifest: SharePluginManifest;
+	disabled?: boolean;
+	settings?: { pluginList?: string[] };
+}
+
+type PluginMap = Record<string, PluginEntry>;
 
 export default class ShareMyPlugin extends Plugin {
 	settings: PluginSettings;
@@ -17,8 +30,11 @@ export default class ShareMyPlugin extends Plugin {
 		await this.saveData(this.settings);
 	}
 
-	async onload() {
+	onload(): void {
+		void this.initialize();
+	}
 
+	private async initialize(): Promise<void> {
 		const t = Locals.get();
 		await this.loadSettings();
 		this.addSettingTab(new ShareMyPluginSettingTab(this.app, this));
@@ -69,14 +85,14 @@ export default class ShareMyPlugin extends Plugin {
 			id: 'install-all',
 			name: t.command.InstallAllInFill,
 			editorCallback: async (editor: Editor, view: MarkdownView) => {
-				let text = editor.getValue();
+				const text = editor.getValue();
 				const urls: Set<string> = new Set();
-				text.match(/obsidian:\/\/SP-install\?[^\s\]\)]+/g)?.forEach(url => {
+				text.match(/obsidian:\/\/SP-install\?[^\s\])]+/g)?.forEach(url => {
 					urls.add(url);
 				})
 				for (const urlString of urls) {
 					const url = new URL(urlString);
-					let params: ObsidianProtocolData = { action: url.pathname.replace(/^\/+/g, "") };
+					const params: ObsidianProtocolData = { action: url.pathname.replace(/^\/+/g, "") };
 					for (const k of url.searchParams.keys()) {
 						params[k] = url.searchParams.get(k) ?? "";
 					}
@@ -90,22 +106,14 @@ export default class ShareMyPlugin extends Plugin {
 		})
 
 		if (this.settings.exportFileWhenLoaded) {
-			setTimeout(async () => {
-				await this.exportToFile(false);
+			window.setTimeout(() => {
+				void this.exportToFile(false);
 			}, 1000);
 		}
 
-		this.getInactivePlugins();
-	}
-
-	debug(...args: any[]): void {
-		if (this.settings.debugMode) {
-			console.log(...args);
-		}
 	}
 
 	async exportToFile(open = true) {
-		this.debug("exportToFile")
 		let content: string;
 		const plugins = await this.getActivePlugins();
 		switch (this.settings.exportFileFormat) {
@@ -123,17 +131,15 @@ export default class ShareMyPlugin extends Plugin {
 		const commentPrefix = "<!-- ShareMyPlugin begin -->";
 		const commentSuffix = "<!-- ShareMyPlugin end -->";
 		content = commentPrefix + "\n\n" + content + "\n\n" + commentSuffix;
-		this.debug(content)
 
 		const vault = this.app.vault;
 		const configuredPath = normalizePath(this.settings.exportFilePath);
 		const path = this.settings.exportFileNameTimestamp ? addTimestampToFilePath(configuredPath) : configuredPath;
-		await touchFolder(vault, path.split(/[\/\\]/).slice(0, -1).join("/"));
+		await touchFolder(vault, path.split(/[/\\]/).slice(0, -1).join("/"));
 		if (await vault.adapter.exists(path)) {
-			let contentOriginal = await vault.adapter.read(path);
-			this.debug("contentOriginal", contentOriginal)
+			const contentOriginal = await vault.adapter.read(path);
 			const r = RegExp(commentPrefix + String.raw`[\s\S]*?` + commentSuffix, "m");
-			let contentNew = r.test(contentOriginal) ? contentOriginal.replace(r, content) : content;
+			const contentNew = r.test(contentOriginal) ? contentOriginal.replace(r, content) : content;
 			await vault.adapter.write(path, contentNew);
 		} else {
 			await vault.create(path, content);
@@ -150,7 +156,7 @@ export default class ShareMyPlugin extends Plugin {
 		}
 	}
 
-	getOrderedPluginKeys(plugins: Record<string, { manifest: { name?: string } }>): string[] {
+	getOrderedPluginKeys(plugins: PluginMap): string[] {
 		const keys = Object.keys(plugins);
 		if (this.settings.pluginSortOrder !== "off") {
 			const direction = this.settings.pluginSortOrder === "desc" ? -1 : 1;
@@ -164,15 +170,11 @@ export default class ShareMyPlugin extends Plugin {
 		return keys;
 	}
 
-	genList(plugins: any): string {
-		this.debug("genList");
+	genList(plugins: PluginMap): string {
 		// const plugins = this.getActivePlugins();
-		this.debug(plugins)
-		let text: string[] = [];
+		const text: string[] = [];
 		for (const key of this.getOrderedPluginKeys(plugins)) {
-			// this.debug(key)
 			const m = plugins[key].manifest;
-			this.debug(m)
 			let line = `- [⬇️](${m.installLink}) [**${m.name}**](${m.pluginUrl})`
 			if (m.author && m.authorUrl) {
 				line += ` by [*${m.author2}*](${m.authorUrl})`
@@ -183,24 +185,21 @@ export default class ShareMyPlugin extends Plugin {
 			}
 			text.push(line);
 		}
-		this.debug(text);
 		return text.join('\n') + "\n\n";
 	}
 
-	genTable(plugins: any): string {
-		this.debug("genTable")
+	genTable(plugins: PluginMap): string {
 		// const plugins = this.getActivePlugins();
 		const t = Locals.get();
 		const hasDesc = this.settings.descriptionLength >= 0;
 
-		let text: string[] = [""];
+		const text: string[] = [""];
 		text.push(t.genTableTemplate.Heading + (hasDesc ? t.genTableTemplate.headerDescription : ""));
 		text.push(t.genTableTemplate.Align + (hasDesc ? "---|" : ""));
 
 		for (const key of this.getOrderedPluginKeys(plugins)) {
-			this.debug(plugins[key]);
 			const m = plugins[key].manifest;
-			let name = `[**${m.name}**](${m.pluginUrl}) [⬇️](${m.installLink})`
+			const name = `[**${m.name}**](${m.pluginUrl}) [⬇️](${m.installLink})`
 			let author = "";
 			if (m.author && m.authorUrl) {
 				author = `[${m?.author2}](${m?.authorUrl})`
@@ -218,27 +217,19 @@ export default class ShareMyPlugin extends Plugin {
 			}
 			text.push(line);
 		}
-		this.debug(text)
 		return text.join('\n') + "\n";
 	}
 
 	async getActivePlugins() {
-		this.debug("getActivePlugins");
 		// @ts-ignore
-		const originPlugins = this.app.plugins.plugins;
+		const originPlugins = this.app.plugins.plugins as PluginMap;
 		return await this.processPlugins(originPlugins);
 	}
 
 	async getInactivePlugins() {
-		this.debug("getInactivePlugins");
 		// @ts-ignore
 		const appPlugins = this.app.plugins;
-		const activePlugins = appPlugins.plugins;
-		const activePluginFolderName: string[] = [];
-		for (let n in activePlugins) {
-			activePluginFolderName.push(activePlugins[n].manifest.dir.split(/[\/\\]/)[2]);
-		}
-		this.debug(activePluginFolderName)
+		const activePlugins = appPlugins.plugins as PluginMap;
 
 		// const vault = this.app.vault
 		// @ts-ignore
@@ -248,8 +239,8 @@ export default class ShareMyPlugin extends Plugin {
 		// const pluginsArray: { [key: string]: any } = {};
 
 		// all plugins (enable & disable)
-		const allPluginManifests = appPlugins.manifests;
-		const inactivePluginManifests: { [key: string]: any } = {};
+		const allPluginManifests = appPlugins.manifests as Record<string, SharePluginManifest>;
+		const inactivePluginManifests: PluginMap = {};
 		for (const id in allPluginManifests) {
 			if (id in activePlugins) { continue; }
 			inactivePluginManifests[id] = {
@@ -259,7 +250,6 @@ export default class ShareMyPlugin extends Plugin {
 		}
 		// const inactivePluginManifests = allPluginManifests.filter(
 		// 	(p: { [key: string]: any }) => Object.keys(activePlugins).includes(p.id));
-		// console.log(inactivePluginManifests)
 		return inactivePluginManifests;
 
 		// const pluginFolderNames: Promise<string[]> = new Promise((resolve, reject) => {
@@ -285,11 +275,11 @@ export default class ShareMyPlugin extends Plugin {
 		// return await this.processPlugins(pluginsArray);
 	}
 
-	async processPlugins(originPlugins: any) {
-		let plugins: any = {};
-		for (let name in originPlugins) {
+	async processPlugins(originPlugins: PluginMap): Promise<PluginMap> {
+		const plugins: PluginMap = {};
+		for (const name in originPlugins) {
 			try {
-				let plugin = { ...originPlugins[name] }; // new an object and make it extensible
+				const plugin = { ...originPlugins[name] }; // new an object and make it extensible
 				plugin.manifest = { ...originPlugins[name].manifest }
 				plugin.manifest["pluginUrl"] = `https://obsidian.md/plugins?id=${plugin.manifest.id}`;
 				plugin.manifest["author2"] = plugin.manifest.author?.replace(/<.*?@.*?\..*?>/g, "").trim(); // remove email address
@@ -297,9 +287,6 @@ export default class ShareMyPlugin extends Plugin {
 				plugins[name] = plugin;
 			} catch (e) {
 				console.error(name, e);
-				console.log(originPlugins[name]);
-				console.log(originPlugins[name].manifest);
-				console.log(typeof originPlugins[name].manifest);
 			}
 		}
 		if ("obsidian42-brat" in plugins == false) {
@@ -307,14 +294,11 @@ export default class ShareMyPlugin extends Plugin {
 		}
 		const BRAT = plugins["obsidian42-brat"];
 		const communityPlugins = this.installer.communityPlugins ?? {};
-		for (const repo of BRAT.settings.pluginList ?? []) {
+		for (const repo of BRAT.settings?.pluginList ?? []) {
 			let manifest: { id: string };
 			try {
-				const response = await fetch(`https://raw.githubusercontent.com/${repo}/HEAD/manifest.json`);
-				if (!response.ok) {
-					throw new Error(`HTTP ${response.status}`);
-				}
-				manifest = await response.json();
+				const response = await requestUrl(`https://raw.githubusercontent.com/${repo}/HEAD/manifest.json`);
+				manifest = response.json as PluginManifest;
 			} catch (e) {
 				console.warn(`Share My Plugin List: failed to fetch BRAT manifest for ${repo}; using the default plugin metadata.`, e);
 				continue;

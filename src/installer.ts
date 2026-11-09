@@ -1,36 +1,36 @@
 import ShareMyPlugin from "main";
-import { Notice, ObsidianProtocolData, debounce } from "obsidian";
+import { Notice, ObsidianProtocolData, debounce, requestUrl } from "obsidian";
 
-export let communityPlugins: any;
+interface CommunityPlugin {
+	id: string;
+	repo: string;
+}
 
-export default class pluginInstaller {
+export default class PluginInstaller {
 	plugin: ShareMyPlugin;
-	communityPlugins: Record<string, { [key: string]: string }>;
-	loaded: boolean;
-	debounceFetch = debounce(async () => { await this.fetchCommunityPlugins }, 1000 * 60 * 60); // 1 hour
+	communityPlugins: Record<string, CommunityPlugin> = {};
+	loaded = false;
+	debounceFetch = debounce(() => { void this.fetchCommunityPlugins(); }, 1000 * 60 * 60);
 
-	async fetchCommunityPlugins() {
-		const pluginList = await fetch(`https://raw.githubusercontent.com/obsidianmd/obsidian-releases/master/community-plugins.json`).then(r => r.json());
-		const keyedPluginList: Record<string, any> = {};
-		for (const item of pluginList) keyedPluginList[item.id] = item;
-		this.communityPlugins = keyedPluginList;
+	async fetchCommunityPlugins(): Promise<void> {
+		const response = await requestUrl("https://raw.githubusercontent.com/obsidianmd/obsidian-releases/master/community-plugins.json");
+		const pluginList = response.json as CommunityPlugin[];
+		this.communityPlugins = Object.fromEntries(pluginList.map(item => [item.id, item]));
 		this.loaded = true;
 	}
 
-	constructor(SMPL: ShareMyPlugin) {
-		this.plugin = SMPL;
-		this.loaded = false;
-		this.fetchCommunityPlugins();
+	constructor(plugin: ShareMyPlugin) {
+		this.plugin = plugin;
+		void this.fetchCommunityPlugins();
 	}
 
-	/**	
-	 * Params
-	 * @param id: string - The id of the plugin to install
-	 * @param version: string | null - The version of the plugin to install (if null, the latest version will be installed, if "", don't check the version)
-	 * @param enable: boolean - Whether to enable the plugin after installing it
-	*/
-	public async installPlugin(id: string, version: string = "", enable: boolean = false, github: string = "") {
-		console.log(`Share My Plugin List: begin installing plugin -- ${id} - ${version} - ${enable} - ${github}`)
+	/**
+	 * @param id Plugin ID to install.
+	 * @param version Version to install; an empty string uses the manifest version.
+	 * @param enable Whether to enable the plugin after installation.
+	 * @param github Optional GitHub repository in owner/name form.
+	 */
+	public async installPlugin(id: string, version = "", enable = false, github = ""): Promise<void> {
 		if (!this.loaded) {
 			await this.fetchCommunityPlugins();
 		} else {
@@ -47,8 +47,7 @@ export default class pluginInstaller {
 		}
 
 		if (pluginRegistry.manifests[id]) {
-			// Plugin already installed
-			new Notice(`Plugin ${pluginRegistry.manifests[id].name} already installed.`)
+			new Notice(`Plugin ${pluginRegistry.manifests[id].name} already installed.`);
 			if (version !== "" && version !== pluginRegistry.manifests[id]?.version) {
 				installFlag = true;
 			}
@@ -57,7 +56,8 @@ export default class pluginInstaller {
 		}
 
 		if (installFlag) {
-			const manifest = await fetch(`https://raw.githubusercontent.com/${repo}/HEAD/manifest.json`).then(r => r.json());
+			const response = await requestUrl(`https://raw.githubusercontent.com/${repo}/HEAD/manifest.json`);
+			const manifest = response.json;
 			if (version.toLowerCase() === "latest" || version === "") version = manifest.version;
 			await pluginRegistry.installPlugin(repo, version, manifest);
 		}
@@ -65,19 +65,18 @@ export default class pluginInstaller {
 		if (enable) {
 			await pluginRegistry.loadPlugin(id);
 			await pluginRegistry.enablePluginAndSave(id);
-		}
-		else {
+		} else {
 			await pluginRegistry.disablePlugin(id);
 		}
 	}
 
-	public async parseAndInstallPlugin(params: ObsidianProtocolData) {
-		let args = {
+	public async parseAndInstallPlugin(params: ObsidianProtocolData): Promise<void> {
+		const args = {
 			id: params.id,
 			version: params?.version ?? "",
 			enable: ["", "true", "1"].includes(params.enable.toLowerCase()),
 			github: params.github ?? "",
-		}
-		this.installPlugin(args.id, args.version, args.enable);
+		};
+		await this.installPlugin(args.id, args.version, args.enable, args.github);
 	}
 }

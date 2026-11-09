@@ -23,17 +23,14 @@ const buyMeACoffee = `
 </svg>`;
 
 
-export function addFundingElement(containerEl: HTMLElement) {
-	const donateELdiv = containerEl.createEl("div");
-	donateELdiv.setAttribute("style", "text-align: center; margin-top: 50px;");
-	const donateELa1 = document.createElement('p');
-	donateELa1.appendText("If you find this plugin useful and would like to support its development, you can sponsor me by the button below.");
-	donateELa1.setAttribute("style", "color: gray; style: italic; font-size: 10px;");
-	donateELdiv.appendChild(donateELa1);
+export function addFundingElement(containerEl: HTMLElement): void {
+	const donationEl = containerEl.createDiv({ cls: "share-my-list-donation" });
+	donationEl.createEl("p", {
+		cls: "share-my-list-donation-text",
+		text: "If you find this plugin useful and would like to support its development, you can sponsor me by the button below.",
+	});
 	const parser = new DOMParser();
-	const donateELa2 = document.createElement('a');
-	donateELa2.setAttribute('href', "https://www.buymeacoffee.com/benature");
-	donateELa2.addClass('advanced-tables-donate-button');
-	donateELa2.appendChild(parser.parseFromString(buyMeACoffee, 'text/xml').documentElement);
-	donateELdiv.appendChild(donateELa2);
+	const coffeeLink = donationEl.createEl("a", { href: "https://www.buymeacoffee.com/benature" });
+	coffeeLink.addClass("share-my-list-donation-button");
+	coffeeLink.appendChild(parser.parseFromString(buyMeACoffee, "text/xml").documentElement);
 }

@@ -1,0 +1,10 @@
+.share-my-list-donation {
+	margin-top: 50px;
+	text-align: center;
+}
+
+.share-my-list-donation-text {
+	color: var(--text-muted);
+	font-size: 10px;
+	font-style: italic;
+}

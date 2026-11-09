@@ -1,4 +1,4 @@
-import { Setting, PluginSettingTab, App, ButtonComponent, Notice } from "obsidian";
+import { Setting, PluginSettingTab, App, Notice, SettingDefinitionItem } from "obsidian";
 import ShareMyPlugin from "../../main";
 
 import { FileSuggest } from "./suggester/FileSuggest";
@@ -39,9 +39,14 @@ export class ShareMyPluginSettingTab extends PluginSettingTab {
 		this.plugin = plugin;
 	}
 
-	display(): void {
-		let { containerEl } = this;
+	getSettingDefinitions(): SettingDefinitionItem[] {
+		return [{
+			name: "Share My List settings",
+			render: (_setting, group) => this.renderSettings(group.listEl),
+		}];
+	}
 
+	renderSettings(containerEl: HTMLElement): void {
 		containerEl.empty();
 		new Setting(this.containerEl)
 			.setName("Max length of description")
@@ -84,7 +89,7 @@ export class ShareMyPluginSettingTab extends PluginSettingTab {
 					});
 			});
 
-		containerEl.createEl("h2", { text: "Export to file" });
+		new Setting(containerEl).setName("Export to file").setHeading();
 		new Setting(this.containerEl)
 			.setName("Path of file to export")
 			.setDesc("IMPORTANT: Without a filename timestamp, this file will be overwritten by the plugin, i.e., old content would be deleted.")
@@ -118,9 +123,9 @@ export class ShareMyPluginSettingTab extends PluginSettingTab {
 					.addOption('list', 'List')
 					.addOption('table', 'Table')
 					.setValue(this.plugin.settings.exportFileFormat || 'list')
-					.onChange((value: string) => {
+					.onChange(async (value: string) => {
 						this.plugin.settings.exportFileFormat = value;
-						this.plugin.saveSettings();
+						await this.plugin.saveSettings();
 					}));
 
 		new Setting(containerEl)
@@ -132,7 +137,7 @@ export class ShareMyPluginSettingTab extends PluginSettingTab {
 					.onChange(async (value) => {
 						this.plugin.settings.exportFileOpen = value;
 						await this.plugin.saveSettings();
-						this.display();
+						this.update();
 					});
 			});
 		if (this.plugin.settings.exportFileOpen) {
@@ -157,11 +162,11 @@ export class ShareMyPluginSettingTab extends PluginSettingTab {
 					.onChange(async (value) => {
 						this.plugin.settings.exportFileWhenLoaded = value;
 						await this.plugin.saveSettings();
-						this.display();
+						this.update();
 					});
 			});
 
-		containerEl.createEl("h2", { text: "Advance settings" });
+		new Setting(containerEl).setName("Advanced").setHeading();
 		new Setting(containerEl)
 			.setName("Debug mode")
 			.setDesc("verbose log in the console")

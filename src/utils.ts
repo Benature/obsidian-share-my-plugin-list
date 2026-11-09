@@ -1,7 +1,11 @@
 
-import { Vault } from "obsidian";
+import { PluginManifest, Vault } from "obsidian";
 
-export function processFunding(m: any): string {
+type ManifestWithFunding = PluginManifest & {
+	fundingUrl?: string | Record<string, string>;
+};
+
+export function processFunding(m: ManifestWithFunding): string {
 	let info: string = "";
 	if (m.fundingUrl) {
 		if (typeof (m.fundingUrl) == 'string') {
@@ -11,12 +15,13 @@ export function processFunding(m: any): string {
 			for (let key in m.fundingUrl) {
 				const url = m.fundingUrl[key]
 				let symbol = "♡"
-				let domain = /https?:\/\/([\w\.]+)\//g.exec(url);
+				let domain = /https?:\/\/([\w.]+)\//g.exec(url);
 				if (domain) {
 					switch (domain[1]) {
 						case "www.buymeacoffee.com":
 							symbol = "☕️"; break;
 						case "afdian.net":
+						case "afdian.com":
 							symbol = "⚡️"; break;
 					}
 				}
@@ -37,16 +42,13 @@ export function addTimestampToFilePath(path: string, date: Date = new Date()): s
 }
 
 
-export async function touchFolder(vault: Vault, folder: string, debug: boolean = false) {
-	if (debug) {
-		console.log("touch Folder", folder);
-	}
+export async function touchFolder(vault: Vault, folder: string): Promise<void> {
 	if (!folder || vault.getAbstractFileByPath(folder)) {
 		return;
 	}
-	const folders = folder.split(/[\/\\]/);
+	const folders = folder.split(/[/\\]/);
 	if (folders.length > 1) {
-		await touchFolder(vault, folders.slice(0, -1).join("/"), debug);
+		await touchFolder(vault, folders.slice(0, -1).join("/"));
 	}
 	await vault.createFolder(folder);
 }
