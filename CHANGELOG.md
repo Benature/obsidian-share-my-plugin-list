@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.4.0
+## 0.3.7
 - [fix] Resolve all Obsidian community review warnings and replace the custom suggestion implementation with AbstractInputSuggest
 - [updated] Adopt the declarative settings API and require Obsidian 1.13.0 or later
 - [chore] Update dependencies and release automation with build provenance

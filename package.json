@@ -1,6 +1,6 @@
 {
 	"name": "obsidian-sample-plugin",
-	"version": "0.4.0",
+	"version": "0.3.7",
 	"description": "This is a sample plugin for Obsidian (https://obsidian.md)",
 	"main": "main.js",
 	"scripts": {
@@ -19,9 +19,12 @@
 		"@typescript-eslint/parser": "^8.72.1",
 		"esbuild": "^0.28.2",
 		"eslint": "^9.39.5",
+		"eslint-plugin-obsidianmd": "^0.5.1",
+		"globals": "^14.0.0",
 		"obsidian": "^1.14.4",
 		"tslib": "^2.9.1",
-		"typescript": "^5.9.3"
+		"typescript": "^5.9.3",
+		"typescript-eslint": "^8.72.1"
 	},
 	"overrides": {
 		"minimatch": "^11.0.1"

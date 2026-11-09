@@ -48,7 +48,7 @@ export class ShareMyPluginSettingTab extends PluginSettingTab {
 
 	renderSettings(containerEl: HTMLElement): void {
 		containerEl.empty();
-		new Setting(this.containerEl)
+		new Setting(containerEl)
 			.setName("Max length of description")
 			.setDesc("-1: do not output description. 0: output description no matter how long it is. >0: output description up to the specified length.")
 			.addText((cb) => {
@@ -90,7 +90,7 @@ export class ShareMyPluginSettingTab extends PluginSettingTab {
 			});
 
 		new Setting(containerEl).setName("Export to file").setHeading();
-		new Setting(this.containerEl)
+		new Setting(containerEl)
 			.setName("Path of file to export")
 			.setDesc("IMPORTANT: Without a filename timestamp, this file will be overwritten by the plugin, i.e., old content would be deleted.")
 			.addText((cb) => {

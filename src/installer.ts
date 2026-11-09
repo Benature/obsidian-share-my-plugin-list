@@ -1,5 +1,6 @@
 import ShareMyPlugin from "main";
-import { Notice, ObsidianProtocolData, debounce, requestUrl } from "obsidian";
+import { Notice, ObsidianProtocolData, PluginManifest, debounce, requestUrl } from "obsidian";
+import { getPluginManager } from "./obsidian-internals";
 
 interface CommunityPlugin {
 	id: string;
@@ -36,8 +37,7 @@ export default class PluginInstaller {
 		} else {
 			this.debounceFetch();
 		}
-		// @ts-ignore
-		const pluginRegistry = this.plugin.app.plugins;
+		const pluginRegistry = getPluginManager(this.plugin.app);
 
 		let installFlag = false;
 		const repo = github !== "" ? github : this.communityPlugins[id]?.repo;
@@ -57,7 +57,7 @@ export default class PluginInstaller {
 
 		if (installFlag) {
 			const response = await requestUrl(`https://raw.githubusercontent.com/${repo}/HEAD/manifest.json`);
-			const manifest = response.json;
+			const manifest = response.json as PluginManifest;
 			if (version.toLowerCase() === "latest" || version === "") version = manifest.version;
 			await pluginRegistry.installPlugin(repo, version, manifest);
 		}

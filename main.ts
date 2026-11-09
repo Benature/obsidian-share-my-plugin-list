@@ -3,27 +3,15 @@ import { PluginSettings, DEFAULT_SETTINGS, ShareMyPluginSettingTab as ShareMyPlu
 import { Locals } from "./src/i18n/i18n";
 import { addTimestampToFilePath, processFunding, touchFolder } from "./src/utils"
 import PluginInstaller from 'src/installer';
-
-interface SharePluginManifest extends PluginManifest {
-	pluginUrl?: string;
-	author2?: string;
-	installLink?: string;
-}
-
-interface PluginEntry {
-	manifest: SharePluginManifest;
-	disabled?: boolean;
-	settings?: { pluginList?: string[] };
-}
-
-type PluginMap = Record<string, PluginEntry>;
+import { getPluginManager } from "src/obsidian-internals";
+import type { PluginMap, SharePluginManifest } from "src/obsidian-internals";
 
 export default class ShareMyPlugin extends Plugin {
 	settings: PluginSettings;
 	installer: PluginInstaller;
 
 	async loadSettings() {
-		this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
+		this.settings = Object.assign({}, DEFAULT_SETTINGS, (await this.loadData()) as Partial<PluginSettings>);
 	}
 
 	async saveSettings() {
@@ -221,15 +209,13 @@ export default class ShareMyPlugin extends Plugin {
 	}
 
 	async getActivePlugins() {
-		// @ts-ignore
-		const originPlugins = this.app.plugins.plugins as PluginMap;
+		const originPlugins = getPluginManager(this.app).plugins;
 		return await this.processPlugins(originPlugins);
 	}
 
 	async getInactivePlugins() {
-		// @ts-ignore
-		const appPlugins = this.app.plugins;
-		const activePlugins = appPlugins.plugins as PluginMap;
+		const appPlugins = getPluginManager(this.app);
+		const activePlugins = appPlugins.plugins;
 
 		// const vault = this.app.vault
 		// @ts-ignore
@@ -239,7 +225,7 @@ export default class ShareMyPlugin extends Plugin {
 		// const pluginsArray: { [key: string]: any } = {};
 
 		// all plugins (enable & disable)
-		const allPluginManifests = appPlugins.manifests as Record<string, SharePluginManifest>;
+		const allPluginManifests: Record<string, SharePluginManifest> = appPlugins.manifests;
 		const inactivePluginManifests: PluginMap = {};
 		for (const id in allPluginManifests) {
 			if (id in activePlugins) { continue; }

@@ -1,21 +1,36 @@
-import tseslint from "@typescript-eslint/eslint-plugin";
+import tseslint from "typescript-eslint";
+import obsidianmd from "eslint-plugin-obsidianmd";
+import globals from "globals";
+import { globalIgnores } from "eslint/config";
 
-export default [
-	...tseslint.configs["flat/recommended"],
+export default tseslint.config(
 	{
-		files: ["**/*.ts"],
+		rules: {
+			"@typescript-eslint/no-unsafe-call": "error",
+			"@typescript-eslint/no-unsafe-member-access": "error",
+			"@typescript-eslint/no-unsafe-return": "error",
+		},
 		languageOptions: {
+			globals: {
+				...globals.browser,
+			},
 			parserOptions: {
-				project: "./tsconfig.json",
+				projectService: {
+					allowDefaultProject: ["manifest.json"],
+				},
+				tsconfigRootDir: import.meta.dirname,
+				extraFileExtensions: [".json"],
 			},
 		},
-		rules: {
-			"@typescript-eslint/no-unused-vars": ["error", { "args": "none" }],
-			"@typescript-eslint/ban-ts-comment": "off",
-			"no-prototype-builtins": "off",
-			"@typescript-eslint/no-empty-function": "off",
-			"@typescript-eslint/no-floating-promises": "error",
-			"@typescript-eslint/no-misused-promises": "error",
-		},
 	},
-];
+	...obsidianmd.configs.recommended,
+	globalIgnores([
+		"node_modules",
+		"dist",
+		"esbuild.config.mjs",
+		"eslint.config.mjs",
+		"version-bump.mjs",
+		"versions.json",
+		"main.js",
+	]),
+);
