@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.3.8
+- [fix] Restore plugin settings on Obsidian 1.15 by rendering into the setting row instead of the host-managed group list
+
 ## 0.3.7
 - [fix] Resolve all Obsidian community review warnings and replace the custom suggestion implementation with AbstractInputSuggest
 - [updated] Adopt the declarative settings API and require Obsidian 1.13.0 or later
