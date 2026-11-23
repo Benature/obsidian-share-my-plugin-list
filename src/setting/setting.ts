@@ -42,7 +42,7 @@ export class ShareMyPluginSettingTab extends PluginSettingTab {
 	getSettingDefinitions(): SettingDefinitionItem[] {
 		return [{
 			name: "Share My List settings",
-			render: (_setting, group) => this.renderSettings(group.listEl),
+			render: (setting) => this.renderSettings(setting.settingEl),
 		}];
 	}
 
